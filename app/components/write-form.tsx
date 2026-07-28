@@ -77,13 +77,24 @@ export function WriteForm({
 
       {state.error && <p className="mt-3 text-xs text-accent">{state.error}</p>}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="mt-6 w-full border border-line py-4 text-sm tracking-widest text-muted transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
-      >
-        {pending ? "託しています…" : "ことづてを託す"}
-      </button>
+      <div className="mt-6 flex gap-3">
+        <button
+          type="submit"
+          disabled={pending}
+          className="flex-1 border border-line py-4 text-sm tracking-widest text-muted transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
+        >
+          {pending ? "託しています…" : "ことづてを託す"}
+        </button>
+
+        {/* 開いたら閉じられないと、書くつもりがなくなったときに逃げ場がない */}
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          className="border border-line px-6 text-xs tracking-widest text-faint transition-colors hover:border-accent hover:text-accent"
+        >
+          やめる
+        </button>
+      </div>
     </form>
   );
 }

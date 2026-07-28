@@ -294,13 +294,20 @@ export async function getPublicTrace(userId: string): Promise<TracePoint[]> {
   return rows.map(({ origin, ...written }) => ({ written, origin }));
 }
 
-/** 自分の軌跡の1要素。届いただけでまだ書いていないものは written が null。 */
+/** 自分が書いた言葉と、それがもう誰かに届いているか(届く前だけ直せる)。 */
+export type WrittenWord = { word: Word; delivered: boolean };
+
+/**
+ * 自分の軌跡の1要素。
+ *
+ * ひとつの言葉に対して、時間をおいて何度でも書ける。
+ * あとから別のことを思い出すことがあるので、written は配列で、
+ * 同じ受け取った言葉の下に積まれていく。まだ書いていなければ空になる。
+ */
 export type TraceEntry = {
   received: Word;
-  written: Word | null;
+  written: WrittenWord[];
   delivered_at: Date;
-  /** 書いた言葉が、すでに誰かに届いているか。届く前だけ直せる。 */
-  written_delivered: boolean;
 };
 
 /**
@@ -314,18 +321,27 @@ export async function getTrace(userId: string): Promise<TraceEntry[]> {
   return sql<TraceEntry[]>`
     select d.delivered_at,
            to_jsonb(r.*) as received,
-           case when w.id is null then null else to_jsonb(w.*) end as written,
            coalesce(
-             exists (select 1 from deliveries sent where sent.word_id = w.id),
-             false
-           ) as written_delivered
+             (
+               select jsonb_agg(
+                        jsonb_build_object(
+                          'word', to_jsonb(w.*),
+                          'delivered', exists (
+                            select 1 from deliveries sent where sent.word_id = w.id
+                          )
+                        )
+                        order by w.created_at
+                      )
+                 from words w
+                where w.parent_word_id = d.word_id
+                  and w.author_user_id = d.user_id
+             ),
+             '[]'::jsonb
+           ) as written
       from deliveries d
       join words r on r.id = d.word_id
-      left join words w
-        on w.parent_word_id = d.word_id
-       and w.author_user_id = d.user_id
      where d.user_id = ${userId}::uuid
-     order by d.delivered_at asc, w.created_at asc nulls first
+     order by d.delivered_at asc
   `;
 }
 

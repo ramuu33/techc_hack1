@@ -15,33 +15,33 @@ export function MyTrace({ entries }: { entries: TraceEntry[] }) {
   return (
     <ol className="space-y-14">
       {entries.map((entry, index) => (
-        <li
-          key={`${entry.received.id}-${entry.written?.id ?? "open"}`}
-          className="animate-fade-up"
-        >
+        <li key={entry.received.id} className="animate-fade-up">
           <Header
             index={index}
             date={entry.delivered_at}
-            filled={entry.written !== null}
+            filled={entry.written.length > 0}
           />
 
           <Origin word={entry.received} />
 
-          {entry.written ? (
+          {/* 同じ言葉に対して書いたものが、古い順に積まれていく */}
+          {entry.written.map((entryWord) => (
             <EditableWord
               // 直したあとに作り直して、編集欄を畳む
-              key={entry.written.text}
-              wordId={entry.written.id}
-              text={entry.written.text}
-              delivered={entry.written_delivered}
+              key={`${entryWord.word.id}-${entryWord.word.text}`}
+              wordId={entryWord.word.id}
+              text={entryWord.word.text}
+              delivered={entryWord.delivered}
             />
-          ) : (
-            <WriteForm
-              wordId={entry.received.id}
-              defaultOpen={false}
-              openLabel="この言葉について書く"
-            />
-          )}
+          ))}
+
+          <WriteForm
+            wordId={entry.received.id}
+            defaultOpen={false}
+            openLabel={
+              entry.written.length > 0 ? "書き足す" : "この言葉について書く"
+            }
+          />
         </li>
       ))}
     </ol>

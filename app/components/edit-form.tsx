@@ -59,7 +59,7 @@ export function EditableWord({
           <button
             type="button"
             onClick={() => setEditing(false)}
-            className="px-5 text-xs tracking-widest text-faint transition-colors hover:text-muted"
+            className="border border-line px-6 text-xs tracking-widest text-faint transition-colors hover:border-accent hover:text-accent"
           >
             やめる
           </button>
