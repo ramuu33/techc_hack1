@@ -176,7 +176,10 @@ export async function peekDeepestLineage(
  * 言葉に、それが生まれるまでの系譜を添えて返す。
  *
  * parent_word_id を根までたどる。ニーチェ → Aさん → Bさん → この言葉、という連鎖が
- * 1回の再帰クエリで取れる。これが「思想が受け渡されてきたこと」を可視化する中核。
+ * 1回の再帰クエリで取れる。
+ *
+ * たどれるのは内容の継承ではなく「この言葉がなければ、この言葉は生まれなかった」という関係。
+ * 実際、連鎖の端と端では主題がまったく違う。これが影響の循環を可視化する中核。
  */
 export async function getWordWithLineage(
   wordId: string,
