@@ -309,6 +309,14 @@ export type WrittenWord = {
   word: Word;
   delivered: boolean;
   written_at: string;
+  /**
+   * この言葉を親にして生まれた、他の人の言葉(古い順)。
+   *
+   * 「受け取りました」は到達量だが、これは変化の証拠そのもの。
+   * 誰かがこの言葉に触れて、自分の言葉を書いた——
+   * 「思想家とは誰かの考えを変えた人」という定義を、書き手が満たした瞬間。
+   */
+  children: Word[];
 };
 
 /**
@@ -343,6 +351,14 @@ export async function getTrace(userId: string): Promise<TraceEntry[]> {
                           'written_at', w.created_at,
                           'delivered', exists (
                             select 1 from deliveries sent where sent.word_id = w.id
+                          ),
+                          'children', coalesce(
+                            (
+                              select jsonb_agg(to_jsonb(c.*) order by c.created_at)
+                                from words c
+                               where c.parent_word_id = w.id
+                            ),
+                            '[]'::jsonb
                           )
                         )
                         order by w.created_at

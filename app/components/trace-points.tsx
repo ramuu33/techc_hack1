@@ -27,14 +27,16 @@ export function MyTrace({ entries }: { entries: TraceEntry[] }) {
 
           {/* 同じ言葉に対して書いたものが、古い順に積まれていく */}
           {entry.written.map((entryWord) => (
-            <EditableWord
-              // 直したあとに作り直して、編集欄を畳む
-              key={`${entryWord.word.id}-${entryWord.word.text}`}
-              wordId={entryWord.word.id}
-              text={entryWord.word.text}
-              delivered={entryWord.delivered}
-              writtenAt={entryWord.written_at}
-            />
+            // 直したあとに作り直して、編集欄を畳む
+            <div key={`${entryWord.word.id}-${entryWord.word.text}`}>
+              <EditableWord
+                wordId={entryWord.word.id}
+                text={entryWord.word.text}
+                delivered={entryWord.delivered}
+                writtenAt={entryWord.written_at}
+              />
+              <BornFrom words={entryWord.children} />
+            </div>
           ))}
 
           <WriteForm
@@ -96,6 +98,35 @@ function Header({
         {formatDate(date)}
         {suffix}
       </time>
+    </div>
+  );
+}
+
+/**
+ * ③' 自分の言葉から生まれた、他の人の言葉。
+ *
+ * 「◯人が受け取りました」は到達量だが、これは変化の証拠そのもの。
+ * 返信ではない——書いた人はこちらに宛てておらず、こちらから返す手段もない。
+ * ただ「自分の言葉が誰かの前提を動かした」という事実だけが返ってくる。
+ * 件数は数えず、生まれた言葉そのものを見せる。
+ */
+function BornFrom({ words }: { words: Word[] }) {
+  if (words.length === 0) return null;
+
+  return (
+    <div className="mt-4 border-l border-line pl-4">
+      <p className="text-[0.7rem] tracking-wider text-accent">
+        この言葉から、ことづてが生まれました
+      </p>
+
+      {words.map((word) => (
+        <p key={word.id} className="mt-2 text-sm leading-loose text-muted">
+          {word.text}
+          <span className="ml-2 whitespace-nowrap text-xs text-faint">
+            — {displayAuthor(word)}
+          </span>
+        </p>
+      ))}
     </div>
   );
 }
