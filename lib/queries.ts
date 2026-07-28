@@ -294,8 +294,17 @@ export async function getPublicTrace(userId: string): Promise<TracePoint[]> {
   return rows.map(({ origin, ...written }) => ({ written, origin }));
 }
 
-/** 自分が書いた言葉と、それがもう誰かに届いているか(届く前だけ直せる)。 */
-export type WrittenWord = { word: Word; delivered: boolean };
+/**
+ * 自分が書いた言葉と、それがもう誰かに届いているか(届く前だけ直せる)。
+ *
+ * written_at は文字列。jsonb に入れた timestamptz は Date ではなく
+ * ISO 8601 の文字列として返るため、型もそのように持つ。
+ */
+export type WrittenWord = {
+  word: Word;
+  delivered: boolean;
+  written_at: string;
+};
 
 /**
  * 自分の軌跡の1要素。
@@ -326,6 +335,7 @@ export async function getTrace(userId: string): Promise<TraceEntry[]> {
                select jsonb_agg(
                         jsonb_build_object(
                           'word', to_jsonb(w.*),
+                          'written_at', w.created_at,
                           'delivered', exists (
                             select 1 from deliveries sent where sent.word_id = w.id
                           )

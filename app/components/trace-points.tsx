@@ -20,6 +20,7 @@ export function MyTrace({ entries }: { entries: TraceEntry[] }) {
             index={index}
             date={entry.delivered_at}
             filled={entry.written.length > 0}
+            suffix="に届いた"
           />
 
           <Origin word={entry.received} />
@@ -32,6 +33,7 @@ export function MyTrace({ entries }: { entries: TraceEntry[] }) {
               wordId={entryWord.word.id}
               text={entryWord.word.text}
               delivered={entryWord.delivered}
+              writtenAt={entryWord.written_at}
             />
           ))}
 
@@ -54,7 +56,12 @@ export function PublicTrace({ points }: { points: TracePoint[] }) {
     <ol className="space-y-14">
       {points.map((point, index) => (
         <li key={point.written.id} className="animate-fade-up">
-          <Header index={index} date={point.written.created_at} filled />
+          <Header
+            index={index}
+            date={point.written.created_at}
+            filled
+            suffix="に書いた"
+          />
           {point.origin && <Origin word={point.origin} />}
           <p className="mt-5 leading-loose tracking-wide">
             {point.written.text}
@@ -69,10 +76,13 @@ function Header({
   index,
   date,
   filled,
+  suffix,
 }: {
   index: number;
   date: Date;
   filled: boolean;
+  /** 自分の軌跡では届いた日、他の人の軌跡では書いた日を出している */
+  suffix: string;
 }) {
   return (
     <div className="flex items-baseline justify-between">
@@ -84,6 +94,7 @@ function Header({
       </span>
       <time dateTime={date.toISOString()} className="text-xs text-faint">
         {formatDate(date)}
+        {suffix}
       </time>
     </div>
   );

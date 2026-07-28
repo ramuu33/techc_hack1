@@ -6,6 +6,15 @@ import { MAX_WORD_LENGTH, MIN_WORD_LENGTH } from "@/lib/constants";
 
 import { editWord, type ActionState } from "../actions";
 
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("ja-JP", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "Asia/Tokyo",
+  }).format(new Date(value));
+}
+
 /**
  * 書いた言葉を直す。
  *
@@ -16,10 +25,13 @@ export function EditableWord({
   wordId,
   text,
   delivered,
+  writtenAt,
 }: {
   wordId: string;
   text: string;
   delivered: boolean;
+  /** ISO 8601 の文字列。jsonb から取り出しているため Date ではない。 */
+  writtenAt: string;
 }) {
   const [state, action, pending] = useActionState<ActionState, FormData>(
     editWord,
@@ -72,18 +84,24 @@ export function EditableWord({
     <>
       <p className="mt-5 leading-loose tracking-wide">{text}</p>
 
-      {delivered ? (
-        <p className="mt-3 text-xs text-faint">
-          もう誰かに届いているので、直せません
-        </p>
-      ) : (
-        <button
-          onClick={() => setEditing(true)}
-          className="mt-3 text-xs tracking-widest text-faint transition-colors hover:text-accent"
-        >
-          直す
-        </button>
-      )}
+      {/*
+        直せないものには何も出さない。全行に「直せません」と並ぶと、
+        できないことの説明が視界を占めるだけになる。
+        直せるものも、日付と同じ行に小さく置くだけにする。
+      */}
+      <div className="mt-2 flex items-baseline justify-between text-[0.7rem] text-faint">
+        {/* 届いた日と書いた日を並べて出す。その差そのものが読みどころになる */}
+        <time dateTime={writtenAt}>{formatDate(writtenAt)}に書いた</time>
+
+        {!delivered && (
+          <button
+            onClick={() => setEditing(true)}
+            className="tracking-widest transition-colors hover:text-accent"
+          >
+            直す
+          </button>
+        )}
+      </div>
     </>
   );
 }
