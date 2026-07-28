@@ -410,7 +410,8 @@ Transaction pooler(6543番)の接続文字列を使う。6543番のときは pre
 8. ホームに戻ると **「あなたの言葉を、今日◯人が受け取りました」**
 9. `/others` で他の人の軌跡を開く
 
-話す内容・時間配分・事故対策は [docs/demo-script.md](docs/demo-script.md) に3分の台本としてまとめてある。
+話す内容・時間配分・事故対策は [docs/demo-script.md](docs/demo-script.md) に10分の台本としてまとめてある。
+スライドは [docs/slides.html](docs/slides.html) — ブラウザで開くだけで動く1ファイルで、台本と同じ順に並んでいる。
 
 ---
 
@@ -418,4 +419,5 @@ Transaction pooler(6543番)の接続文字列を使う。6543番のときは pre
 
 - [docs/concept.md](docs/concept.md) — 企画書(背景・仮説・設計判断・やらないこと)
 - [docs/sources.md](docs/sources.md) — 収録テキストの出典と著作権の確認
-- [docs/demo-script.md](docs/demo-script.md) — 3分のデモ台本(事前準備・話す内容・事故対策・想定質問)
+- [docs/demo-script.md](docs/demo-script.md) — 10分の発表台本(事前準備・話す内容・事故対策・想定質問)
+- [docs/slides.html](docs/slides.html) — 発表スライド(1ファイル完結・タイマー内蔵・QRはその場で生成)
