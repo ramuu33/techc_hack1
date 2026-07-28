@@ -8,7 +8,16 @@
  * 両方がこれを読む。片方だけ直して食い違うことがないようにしている。
  */
 
-export const DEMO_NICKNAMES = [
+/**
+ * かつてこのデモで使っていたニックネーム。
+ *
+ * 本名風の名前をハンドルネームに変えたときの取り残しを掃除するために残している。
+ * デモデータの投入は「DEMO_NICKNAMES を消して作り直す」方式なので、
+ * これがないと古い名前のユーザーが本番に居座り続ける(消す手がかりが無くなる)。
+ *
+ * 名前を変えたら、古いほうをここに足すこと。
+ */
+export const RETIRED_NICKNAMES = [
   "はるか",
   "けんた",
   "みお",
@@ -21,6 +30,21 @@ export const DEMO_NICKNAMES = [
   "りく",
   "かなえ",
   "いつき",
+];
+
+export const DEMO_NICKNAMES = [
+  "のらねこ",
+  "三日坊主",
+  "こもれび",
+  "しろくま",
+  "まめだいふく",
+  "kome3",
+  "ゆず",
+  "かもめ729",
+  "すずめ",
+  "やどかり",
+  "ことりん",
+  "たんぽぽ",
 ];
 
 /** 偉人の言葉を親にする場合は text、ユーザーの言葉を親にする場合は nickname で指す。 */
@@ -38,12 +62,12 @@ export type Entry = {
 /**
  * 「言葉が届く → 心が動いて書く」の連なり。
  *
- * 先頭の3件が系譜になっている: 芥川龍之介 → はるか → けんた → みお。
+ * 先頭の3件が系譜になっている: 芥川龍之介 → のらねこ → 三日坊主 → こもれび。
  * 受け取っていない言葉には書けないため、投入も「届いた → 書いた」の順で行う。
  */
 export const ENTRIES: Entry[] = [
   {
-    nickname: "はるか",
+    nickname: "のらねこ",
     parent: {
       kind: "classic",
       text: "危険思想とは常識を実行に移そうとする思想である。",
@@ -52,21 +76,21 @@ export const ENTRIES: Entry[] = [
     daysAgo: 9,
   },
   {
-    nickname: "けんた",
-    parent: { kind: "user", nickname: "はるか" },
+    nickname: "三日坊主",
+    parent: { kind: "user", nickname: "のらねこ" },
     text: "波風を立てたくない、が自分にもある。会議で違和感を持っても「まあいいか」で終わらせる。でもそれを何回か続けたら、自分がその案に賛成したことになっていた。黙るのは中立じゃなかった。",
     daysAgo: 6,
   },
   {
-    nickname: "みお",
-    parent: { kind: "user", nickname: "けんた" },
+    nickname: "こもれび",
+    parent: { kind: "user", nickname: "三日坊主" },
     text: "黙るのは中立じゃない、という一文で、先月の自分を思い出した。友達が誰かの悪口を言っていたとき、否定も肯定もしなかった。あれは優しさのつもりだったけど、その場にいた誰にとってもそう見えていなかったと思う。",
     daysAgo: 3,
   },
 
   // 別の系統。他の人の本に厚みを出すために置いている。
   {
-    nickname: "さとし",
+    nickname: "しろくま",
     parent: {
       kind: "classic",
       text: "世界がぜんたい幸福にならないうちは個人の幸福はあり得ない",
@@ -75,7 +99,7 @@ export const ENTRIES: Entry[] = [
     daysAgo: 5,
   },
   {
-    nickname: "さとし",
+    nickname: "しろくま",
     parent: {
       kind: "classic",
       text: "不確実なものが確実なものの基礎である。",
@@ -95,13 +119,13 @@ export const ENTRIES: Entry[] = [
    * 画面から読み取れなくなる。
    */
   {
-    nickname: "ゆい",
+    nickname: "まめだいふく",
     parent: { kind: "classic", text: "過ちを改めないこと、それを過ちという。" },
     text: "バイトで発注を間違えて、その場ではちゃんと謝った。でも次の週も同じやり方で発注していた。謝ることと直すことは別なんだと、二回目のミスで気づいた。",
     daysAgo: 8,
   },
   {
-    nickname: "なおき",
+    nickname: "kome3",
     parent: {
       kind: "classic",
       text: "頭のよい人は、あまりに多く頭の力を過信する恐れがある。",
@@ -110,13 +134,13 @@ export const ENTRIES: Entry[] = [
     daysAgo: 7,
   },
   {
-    nickname: "あかり",
+    nickname: "ゆず",
     parent: { kind: "classic", text: "恥の多い生涯を送って来ました。" },
     text: "祖母が同じ話を何度もする。そのたびに「それ聞いた」と言っていた。祖母は話したかったんじゃなくて、私と話したかったんだと思う。今日は最後まで聞いた。",
     daysAgo: 6,
   },
   {
-    nickname: "そう",
+    nickname: "かもめ729",
     parent: {
       kind: "classic",
       text: "自分を軽蔑する者も、軽蔑する者としては、やはり自分を尊重している。",
@@ -125,7 +149,7 @@ export const ENTRIES: Entry[] = [
     daysAgo: 5,
   },
   {
-    nickname: "みなみ",
+    nickname: "すずめ",
     parent: {
       kind: "classic",
       text: "幸福について考えないことは今日の人間の特徴である。",
@@ -134,7 +158,7 @@ export const ENTRIES: Entry[] = [
     daysAgo: 4,
   },
   {
-    nickname: "りく",
+    nickname: "やどかり",
     parent: {
       kind: "classic",
       text: "阿呆はいつも、自分以外の人間をひとり残らず阿呆だと思っている。",
@@ -145,14 +169,14 @@ export const ENTRIES: Entry[] = [
 
   // 別系統の2世代目。系譜が1本だけではないことを画面で見せるために置いている。
   {
-    nickname: "かなえ",
-    parent: { kind: "user", nickname: "みなみ" },
+    nickname: "ことりん",
+    parent: { kind: "user", nickname: "すずめ" },
     text: "幸せがすぐ出てこなかった、という話。私も出てこない。ただ私の場合は、考えたことがないんじゃなくて、答えたら笑われる気がして言わずにきただけだった。",
     daysAgo: 2,
   },
   {
-    nickname: "いつき",
-    parent: { kind: "user", nickname: "あかり" },
+    nickname: "たんぽぽ",
+    parent: { kind: "user", nickname: "ゆず" },
     text: "同じ話を最後まで聞いた、という話を読んだ。自分は父に対してそれができていない。話が始まると先に結論を言ってしまう。早く終わらせたいのは自分の都合だった。",
     daysAgo: 1,
   },
@@ -170,11 +194,11 @@ export type ExtraDelivery = {
 };
 
 export const EXTRA_DELIVERIES: ExtraDelivery[] = [
-  { wordBy: "はるか", to: ["みお", "さとし", "ゆい", "りく"], daysAgo: 5 },
-  { wordBy: "けんた", to: ["みお", "さとし", "なおき"], daysAgo: 2 },
-  { wordBy: "みお", to: ["はるか", "けんた", "さとし", "あかり"], daysAgo: 0 },
-  { wordBy: "ゆい", to: ["なおき", "そう"], daysAgo: 4 },
-  { wordBy: "あかり", to: ["いつき", "みなみ", "そう"], daysAgo: 3 },
-  { wordBy: "みなみ", to: ["かなえ", "りく"], daysAgo: 2 },
-  { wordBy: "なおき", to: ["ゆい"], daysAgo: 1 },
+  { wordBy: "のらねこ", to: ["こもれび", "しろくま", "まめだいふく", "やどかり"], daysAgo: 5 },
+  { wordBy: "三日坊主", to: ["こもれび", "しろくま", "kome3"], daysAgo: 2 },
+  { wordBy: "こもれび", to: ["のらねこ", "三日坊主", "しろくま", "ゆず"], daysAgo: 0 },
+  { wordBy: "まめだいふく", to: ["kome3", "かもめ729"], daysAgo: 4 },
+  { wordBy: "ゆず", to: ["たんぽぽ", "すずめ", "かもめ729"], daysAgo: 3 },
+  { wordBy: "すずめ", to: ["ことりん", "やどかり"], daysAgo: 2 },
+  { wordBy: "kome3", to: ["まめだいふく"], daysAgo: 1 },
 ];
