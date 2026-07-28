@@ -95,10 +95,25 @@ async function pickUndelivered(
               where d.user_id = ${userId}::uuid
                 and d.word_id = w.id
            )
-     order by random()
+     -- 配信回数の少ない言葉を優先し、同数の中では無作為に引く。
+     -- 完全な random() だと、プールが増えるほど1つの言葉が引かれる確率が薄まり、
+     -- 書いた言葉が誰にも届かないまま沈む。この並びなら、
+     -- すべての言葉がいつか誰かに届くことが保証される。
+     order by (select count(*) from deliveries sent where sent.word_id = w.id) asc,
+              random()
      limit 1
   `;
   return rows[0] ?? null;
+}
+
+/** 一度でも言葉を受け取ったことがあるか。初回の1語の特別扱いに使う。 */
+export async function hasReceivedBefore(userId: string): Promise<boolean> {
+  const rows = await sql<{ exists: boolean }[]>`
+    select exists (
+      select 1 from deliveries where user_id = ${userId}::uuid
+    ) as exists
+  `;
+  return rows[0]?.exists ?? false;
 }
 
 /**
