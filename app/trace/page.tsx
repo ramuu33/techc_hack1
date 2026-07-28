@@ -1,13 +1,13 @@
 import Link from "next/link";
 
-import { getBook, getReachStats } from "@/lib/queries";
+import { getReachStats, getTrace } from "@/lib/queries";
 import { getCurrentUser } from "@/lib/session";
 
-import { BookPages } from "../components/book-pages";
+import { MyTrace } from "../components/trace-points";
 
-export const metadata = { title: "わたしの本 — ことづて" };
+export const metadata = { title: "わたしの軌跡 — ことづて" };
 
-export default async function BookPage() {
+export default async function TracePage() {
   const user = await getCurrentUser();
 
   if (!user) {
@@ -20,15 +20,15 @@ export default async function BookPage() {
     );
   }
 
-  const [pages, stats] = await Promise.all([
-    getBook(user.id),
+  const [entries, stats] = await Promise.all([
+    getTrace(user.id),
     getReachStats(user.id),
   ]);
 
-  if (pages.length === 0) {
+  if (entries.length === 0) {
     return (
       <Empty>
-        まだ1ページも書かれていません。
+        まだ何も届いていません。
         <br />
         <Link href="/" className="underline underline-offset-4">
           今日のことづてを受け取る
@@ -39,16 +39,20 @@ export default async function BookPage() {
 
   return (
     <div>
-      <div className="mb-10 text-center">
+      <div className="mb-12 text-center">
         <h2 className="text-sm tracking-[0.3em] text-muted">
-          {user.nickname}の本
+          {user.nickname}の軌跡
         </h2>
         <p className="mt-3 text-xs text-faint">
-          {pages.length} ページ・のべ {stats.total} 人に届きました
+          {stats.points} の点
+          {stats.total > 0 && ` ・ のべ ${stats.total} 人に届きました`}
+        </p>
+        <p className="mt-4 text-xs leading-relaxed text-faint">
+          点が増えるほど、軌跡が見えてくる
         </p>
       </div>
 
-      <BookPages pages={pages} />
+      <MyTrace entries={entries} />
     </div>
   );
 }

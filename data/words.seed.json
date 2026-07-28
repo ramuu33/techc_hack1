@@ -1,27 +1,15 @@
 [
   {
-    "text": "道徳は便宜の異名である。「左側通行」と似たものである。",
+    "text": "道徳とは、都合のよさの別名だ。「左側を歩く」という決まりと似たようなものだ。",
     "author": "芥川龍之介",
     "source": "侏儒の言葉",
     "source_url": "https://www.aozora.gr.jp/cards/000879/files/158_15132.html",
-    "source_type": "classic"
+    "source_type": "classic",
+    "original": "道徳は便宜の異名である。「左側通行」と似たものである。",
+    "translation_note": "原文(文語)より現代語に"
   },
   {
     "text": "道徳は常に古着である。",
-    "author": "芥川龍之介",
-    "source": "侏儒の言葉",
-    "source_url": "https://www.aozora.gr.jp/cards/000879/files/158_15132.html",
-    "source_type": "classic"
-  },
-  {
-    "text": "良心とは厳粛なる趣味である。",
-    "author": "芥川龍之介",
-    "source": "侏儒の言葉",
-    "source_url": "https://www.aozora.gr.jp/cards/000879/files/158_15132.html",
-    "source_type": "classic"
-  },
-  {
-    "text": "一国民の九割強は一生良心を持たぬものである。",
     "author": "芥川龍之介",
     "source": "侏儒の言葉",
     "source_url": "https://www.aozora.gr.jp/cards/000879/files/158_15132.html",
@@ -35,13 +23,6 @@
     "source_type": "classic"
   },
   {
-    "text": "忍従はロマンティックな卑屈である。",
-    "author": "芥川龍之介",
-    "source": "侏儒の言葉",
-    "source_url": "https://www.aozora.gr.jp/cards/000879/files/158_15132.html",
-    "source_type": "classic"
-  },
-  {
     "text": "人生の悲劇の第一幕は親子となったことにはじまっている。",
     "author": "芥川龍之介",
     "source": "侏儒の言葉",
@@ -49,70 +30,34 @@
     "source_type": "classic"
   },
   {
-    "text": "自由は山巓の空気に似ている。どちらも弱い者には堪えることは出来ない。",
+    "text": "自由は山の頂の空気に似ている。どちらも、弱い者には耐えられない。",
     "author": "芥川龍之介",
     "source": "侏儒の言葉",
     "source_url": "https://www.aozora.gr.jp/cards/000879/files/158_15132.html",
-    "source_type": "classic"
+    "source_type": "classic",
+    "original": "自由は山巓の空気に似ている。どちらも弱い者には堪えることは出来ない。",
+    "translation_note": "原文(文語)より現代語に"
   },
   {
-    "text": "最も賢い処世術は社会的因襲を軽蔑しながら、しかも社会的因襲と矛盾せぬ生活をすることである。",
+    "text": "阿呆はいつも、自分以外の人間をひとり残らず阿呆だと思っている。",
     "author": "芥川龍之介",
     "source": "侏儒の言葉",
     "source_url": "https://www.aozora.gr.jp/cards/000879/files/158_15132.html",
-    "source_type": "classic"
+    "source_type": "classic",
+    "original": "阿呆はいつも彼以外の人人を悉く阿呆と考えている。",
+    "translation_note": "原文(文語)より現代語に"
   },
   {
-    "text": "阿呆はいつも彼以外の人人を悉く阿呆と考えている。",
+    "text": "他人を弁護するより、自分を弁護するほうが難しい。疑うなら、弁護士を見てみるといい。",
     "author": "芥川龍之介",
     "source": "侏儒の言葉",
     "source_url": "https://www.aozora.gr.jp/cards/000879/files/158_15132.html",
-    "source_type": "classic"
-  },
-  {
-    "text": "他人を弁護するよりも自己を弁護するのは困難である。疑うものは弁護士を見よ。",
-    "author": "芥川龍之介",
-    "source": "侏儒の言葉",
-    "source_url": "https://www.aozora.gr.jp/cards/000879/files/158_15132.html",
-    "source_type": "classic"
-  },
-  {
-    "text": "結婚は性慾を調節することには有効である。が、恋愛を調節することには有効ではない。",
-    "author": "芥川龍之介",
-    "source": "侏儒の言葉",
-    "source_url": "https://www.aozora.gr.jp/cards/000879/files/158_15132.html",
-    "source_type": "classic"
-  },
-  {
-    "text": "天才の一面は明らかに醜聞を起し得る才能である。",
-    "author": "芥川龍之介",
-    "source": "侏儒の言葉",
-    "source_url": "https://www.aozora.gr.jp/cards/000879/files/158_15132.html",
-    "source_type": "classic"
-  },
-  {
-    "text": "創作は常に冒険である。所詮は人力を尽した後、天命に委かせるより仕方はない。",
-    "author": "芥川龍之介",
-    "source": "侏儒の言葉",
-    "source_url": "https://www.aozora.gr.jp/cards/000879/files/158_15132.html",
-    "source_type": "classic"
-  },
-  {
-    "text": "古典の作者の幸福なる所以は兎に角彼等の死んでいることである。",
-    "author": "芥川龍之介",
-    "source": "侏儒の言葉",
-    "source_url": "https://www.aozora.gr.jp/cards/000879/files/158_15132.html",
-    "source_type": "classic"
+    "source_type": "classic",
+    "original": "他人を弁護するよりも自己を弁護するのは困難である。疑うものは弁護士を見よ。",
+    "translation_note": "原文(文語)より現代語に"
   },
   {
     "text": "幸福について考えないことは今日の人間の特徴である。",
-    "author": "三木清",
-    "source": "人生論ノート",
-    "source_url": "https://www.aozora.gr.jp/cards/000218/files/1914_63525.html",
-    "source_type": "classic"
-  },
-  {
-    "text": "幸福は徳に反するものでなく、むしろ幸福そのものが徳である。",
     "author": "三木清",
     "source": "人生論ノート",
     "source_url": "https://www.aozora.gr.jp/cards/000218/files/1914_63525.html",
@@ -126,27 +71,6 @@
     "source_type": "classic"
   },
   {
-    "text": "鳥の歌うが如くおのずから外に現われて他の人を幸福にするものが真の幸福である。",
-    "author": "三木清",
-    "source": "人生論ノート",
-    "source_url": "https://www.aozora.gr.jp/cards/000218/files/1914_63525.html",
-    "source_type": "classic"
-  },
-  {
-    "text": "幸福を武器として闘う者のみが斃れてもなお幸福である。",
-    "author": "三木清",
-    "source": "人生論ノート",
-    "source_url": "https://www.aozora.gr.jp/cards/000218/files/1914_63525.html",
-    "source_type": "classic"
-  },
-  {
-    "text": "懐疑は天使でもなく獣でもない人間に固有なものである。",
-    "author": "三木清",
-    "source": "人生論ノート",
-    "source_url": "https://www.aozora.gr.jp/cards/000218/files/1914_63525.html",
-    "source_type": "classic"
-  },
-  {
     "text": "不確実なものが確実なものの基礎である。",
     "author": "三木清",
     "source": "人生論ノート",
@@ -154,25 +78,13 @@
     "source_type": "classic"
   },
   {
-    "text": "論理によって懐疑が出てくるのでなく、懐疑から論理が求められてくるのである。",
+    "text": "論理から疑いが生まれるのではない。疑いがあるから、論理が求められるのだ。",
     "author": "三木清",
     "source": "人生論ノート",
     "source_url": "https://www.aozora.gr.jp/cards/000218/files/1914_63525.html",
-    "source_type": "classic"
-  },
-  {
-    "text": "個性とは別にタイプがあるのでなく、タイプは個性である。",
-    "author": "三木清",
-    "source": "人生論ノート",
-    "source_url": "https://www.aozora.gr.jp/cards/000218/files/1914_63525.html",
-    "source_type": "classic"
-  },
-  {
-    "text": "伝統の問題は死者の生命の問題である。",
-    "author": "三木清",
-    "source": "人生論ノート",
-    "source_url": "https://www.aozora.gr.jp/cards/000218/files/1914_63525.html",
-    "source_type": "classic"
+    "source_type": "classic",
+    "original": "論理によって懐疑が出てくるのでなく、懐疑から論理が求められてくるのである。",
+    "translation_note": "原文(文語)より現代語に"
   },
   {
     "text": "世界がぜんたい幸福にならないうちは個人の幸福はあり得ない",
@@ -182,39 +94,13 @@
     "source_type": "classic"
   },
   {
-    "text": "正しく強く生きるとは銀河系を自らの中に意識してこれに応じて行くことである",
+    "text": "わたしたちは、世界のほんとうの幸福を探しに行こう。探し求めること自体が、すでに道なのだ。",
     "author": "宮沢賢治",
     "source": "農民芸術概論綱要",
     "source_url": "https://www.aozora.gr.jp/cards/000081/files/2386_13825.html",
-    "source_type": "classic"
-  },
-  {
-    "text": "自我の意識は個人から集団社会宇宙と次第に進化する",
-    "author": "宮沢賢治",
-    "source": "農民芸術概論綱要",
-    "source_url": "https://www.aozora.gr.jp/cards/000081/files/2386_13825.html",
-    "source_type": "classic"
-  },
-  {
-    "text": "われらは世界のまことの幸福を索ねよう　求道すでに道である",
-    "author": "宮沢賢治",
-    "source": "農民芸術概論綱要",
-    "source_url": "https://www.aozora.gr.jp/cards/000081/files/2386_13825.html",
-    "source_type": "classic"
-  },
-  {
-    "text": "芸術をもてあの灰色の労働を燃せ",
-    "author": "宮沢賢治",
-    "source": "農民芸術概論綱要",
-    "source_url": "https://www.aozora.gr.jp/cards/000081/files/2386_13825.html",
-    "source_type": "classic"
-  },
-  {
-    "text": "われらは新たな美を創る　美学は絶えず移動する",
-    "author": "宮沢賢治",
-    "source": "農民芸術概論綱要",
-    "source_url": "https://www.aozora.gr.jp/cards/000081/files/2386_13825.html",
-    "source_type": "classic"
+    "source_type": "classic",
+    "original": "われらは世界のまことの幸福を索ねよう　求道すでに道である",
+    "translation_note": "原文(文語)より現代語に"
   },
   {
     "text": "科学者になるには自然を恋人としなければならない。",

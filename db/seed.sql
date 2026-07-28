@@ -1,4 +1,4 @@
--- 偉人の言葉 66 件(すべてパブリックドメイン)
+-- 偉人の言葉 48 件(すべてパブリックドメイン)
 --
 -- このファイルは自動生成される。直接編集しないこと。
 --   生成元: data/words.seed.json
@@ -8,128 +8,56 @@
 -- 先に db/schema.sql を実行しておくこと。
 
 insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '道徳は便宜の異名である。「左側通行」と似たものである。', '芥川龍之介', 'classic', '侏儒の言葉', 'https://www.aozora.gr.jp/cards/000879/files/158_15132.html', null, null
-where not exists (select 1 from words where text = '道徳は便宜の異名である。「左側通行」と似たものである。' and source_type = 'classic');
+select '道徳とは、都合のよさの別名だ。「左側を歩く」という決まりと似たようなものだ。', '芥川龍之介', 'classic', '侏儒の言葉', 'https://www.aozora.gr.jp/cards/000879/files/158_15132.html', '道徳は便宜の異名である。「左側通行」と似たものである。', '原文(文語)より現代語に'
+where not exists (select 1 from words where text = '道徳とは、都合のよさの別名だ。「左側を歩く」という決まりと似たようなものだ。' and source_type = 'classic');
 
 insert into words (text, author, source_type, source, source_url, original, translation_note)
 select '道徳は常に古着である。', '芥川龍之介', 'classic', '侏儒の言葉', 'https://www.aozora.gr.jp/cards/000879/files/158_15132.html', null, null
 where not exists (select 1 from words where text = '道徳は常に古着である。' and source_type = 'classic');
 
 insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '良心とは厳粛なる趣味である。', '芥川龍之介', 'classic', '侏儒の言葉', 'https://www.aozora.gr.jp/cards/000879/files/158_15132.html', null, null
-where not exists (select 1 from words where text = '良心とは厳粛なる趣味である。' and source_type = 'classic');
-
-insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '一国民の九割強は一生良心を持たぬものである。', '芥川龍之介', 'classic', '侏儒の言葉', 'https://www.aozora.gr.jp/cards/000879/files/158_15132.html', null, null
-where not exists (select 1 from words where text = '一国民の九割強は一生良心を持たぬものである。' and source_type = 'classic');
-
-insert into words (text, author, source_type, source, source_url, original, translation_note)
 select '危険思想とは常識を実行に移そうとする思想である。', '芥川龍之介', 'classic', '侏儒の言葉', 'https://www.aozora.gr.jp/cards/000879/files/158_15132.html', null, null
 where not exists (select 1 from words where text = '危険思想とは常識を実行に移そうとする思想である。' and source_type = 'classic');
-
-insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '忍従はロマンティックな卑屈である。', '芥川龍之介', 'classic', '侏儒の言葉', 'https://www.aozora.gr.jp/cards/000879/files/158_15132.html', null, null
-where not exists (select 1 from words where text = '忍従はロマンティックな卑屈である。' and source_type = 'classic');
 
 insert into words (text, author, source_type, source, source_url, original, translation_note)
 select '人生の悲劇の第一幕は親子となったことにはじまっている。', '芥川龍之介', 'classic', '侏儒の言葉', 'https://www.aozora.gr.jp/cards/000879/files/158_15132.html', null, null
 where not exists (select 1 from words where text = '人生の悲劇の第一幕は親子となったことにはじまっている。' and source_type = 'classic');
 
 insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '自由は山巓の空気に似ている。どちらも弱い者には堪えることは出来ない。', '芥川龍之介', 'classic', '侏儒の言葉', 'https://www.aozora.gr.jp/cards/000879/files/158_15132.html', null, null
-where not exists (select 1 from words where text = '自由は山巓の空気に似ている。どちらも弱い者には堪えることは出来ない。' and source_type = 'classic');
+select '自由は山の頂の空気に似ている。どちらも、弱い者には耐えられない。', '芥川龍之介', 'classic', '侏儒の言葉', 'https://www.aozora.gr.jp/cards/000879/files/158_15132.html', '自由は山巓の空気に似ている。どちらも弱い者には堪えることは出来ない。', '原文(文語)より現代語に'
+where not exists (select 1 from words where text = '自由は山の頂の空気に似ている。どちらも、弱い者には耐えられない。' and source_type = 'classic');
 
 insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '最も賢い処世術は社会的因襲を軽蔑しながら、しかも社会的因襲と矛盾せぬ生活をすることである。', '芥川龍之介', 'classic', '侏儒の言葉', 'https://www.aozora.gr.jp/cards/000879/files/158_15132.html', null, null
-where not exists (select 1 from words where text = '最も賢い処世術は社会的因襲を軽蔑しながら、しかも社会的因襲と矛盾せぬ生活をすることである。' and source_type = 'classic');
+select '阿呆はいつも、自分以外の人間をひとり残らず阿呆だと思っている。', '芥川龍之介', 'classic', '侏儒の言葉', 'https://www.aozora.gr.jp/cards/000879/files/158_15132.html', '阿呆はいつも彼以外の人人を悉く阿呆と考えている。', '原文(文語)より現代語に'
+where not exists (select 1 from words where text = '阿呆はいつも、自分以外の人間をひとり残らず阿呆だと思っている。' and source_type = 'classic');
 
 insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '阿呆はいつも彼以外の人人を悉く阿呆と考えている。', '芥川龍之介', 'classic', '侏儒の言葉', 'https://www.aozora.gr.jp/cards/000879/files/158_15132.html', null, null
-where not exists (select 1 from words where text = '阿呆はいつも彼以外の人人を悉く阿呆と考えている。' and source_type = 'classic');
-
-insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '他人を弁護するよりも自己を弁護するのは困難である。疑うものは弁護士を見よ。', '芥川龍之介', 'classic', '侏儒の言葉', 'https://www.aozora.gr.jp/cards/000879/files/158_15132.html', null, null
-where not exists (select 1 from words where text = '他人を弁護するよりも自己を弁護するのは困難である。疑うものは弁護士を見よ。' and source_type = 'classic');
-
-insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '結婚は性慾を調節することには有効である。が、恋愛を調節することには有効ではない。', '芥川龍之介', 'classic', '侏儒の言葉', 'https://www.aozora.gr.jp/cards/000879/files/158_15132.html', null, null
-where not exists (select 1 from words where text = '結婚は性慾を調節することには有効である。が、恋愛を調節することには有効ではない。' and source_type = 'classic');
-
-insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '天才の一面は明らかに醜聞を起し得る才能である。', '芥川龍之介', 'classic', '侏儒の言葉', 'https://www.aozora.gr.jp/cards/000879/files/158_15132.html', null, null
-where not exists (select 1 from words where text = '天才の一面は明らかに醜聞を起し得る才能である。' and source_type = 'classic');
-
-insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '創作は常に冒険である。所詮は人力を尽した後、天命に委かせるより仕方はない。', '芥川龍之介', 'classic', '侏儒の言葉', 'https://www.aozora.gr.jp/cards/000879/files/158_15132.html', null, null
-where not exists (select 1 from words where text = '創作は常に冒険である。所詮は人力を尽した後、天命に委かせるより仕方はない。' and source_type = 'classic');
-
-insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '古典の作者の幸福なる所以は兎に角彼等の死んでいることである。', '芥川龍之介', 'classic', '侏儒の言葉', 'https://www.aozora.gr.jp/cards/000879/files/158_15132.html', null, null
-where not exists (select 1 from words where text = '古典の作者の幸福なる所以は兎に角彼等の死んでいることである。' and source_type = 'classic');
+select '他人を弁護するより、自分を弁護するほうが難しい。疑うなら、弁護士を見てみるといい。', '芥川龍之介', 'classic', '侏儒の言葉', 'https://www.aozora.gr.jp/cards/000879/files/158_15132.html', '他人を弁護するよりも自己を弁護するのは困難である。疑うものは弁護士を見よ。', '原文(文語)より現代語に'
+where not exists (select 1 from words where text = '他人を弁護するより、自分を弁護するほうが難しい。疑うなら、弁護士を見てみるといい。' and source_type = 'classic');
 
 insert into words (text, author, source_type, source, source_url, original, translation_note)
 select '幸福について考えないことは今日の人間の特徴である。', '三木清', 'classic', '人生論ノート', 'https://www.aozora.gr.jp/cards/000218/files/1914_63525.html', null, null
 where not exists (select 1 from words where text = '幸福について考えないことは今日の人間の特徴である。' and source_type = 'classic');
 
 insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '幸福は徳に反するものでなく、むしろ幸福そのものが徳である。', '三木清', 'classic', '人生論ノート', 'https://www.aozora.gr.jp/cards/000218/files/1914_63525.html', null, null
-where not exists (select 1 from words where text = '幸福は徳に反するものでなく、むしろ幸福そのものが徳である。' and source_type = 'classic');
-
-insert into words (text, author, source_type, source, source_url, original, translation_note)
 select '幸福になるということは人格になるということである。', '三木清', 'classic', '人生論ノート', 'https://www.aozora.gr.jp/cards/000218/files/1914_63525.html', null, null
 where not exists (select 1 from words where text = '幸福になるということは人格になるということである。' and source_type = 'classic');
-
-insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '鳥の歌うが如くおのずから外に現われて他の人を幸福にするものが真の幸福である。', '三木清', 'classic', '人生論ノート', 'https://www.aozora.gr.jp/cards/000218/files/1914_63525.html', null, null
-where not exists (select 1 from words where text = '鳥の歌うが如くおのずから外に現われて他の人を幸福にするものが真の幸福である。' and source_type = 'classic');
-
-insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '幸福を武器として闘う者のみが斃れてもなお幸福である。', '三木清', 'classic', '人生論ノート', 'https://www.aozora.gr.jp/cards/000218/files/1914_63525.html', null, null
-where not exists (select 1 from words where text = '幸福を武器として闘う者のみが斃れてもなお幸福である。' and source_type = 'classic');
-
-insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '懐疑は天使でもなく獣でもない人間に固有なものである。', '三木清', 'classic', '人生論ノート', 'https://www.aozora.gr.jp/cards/000218/files/1914_63525.html', null, null
-where not exists (select 1 from words where text = '懐疑は天使でもなく獣でもない人間に固有なものである。' and source_type = 'classic');
 
 insert into words (text, author, source_type, source, source_url, original, translation_note)
 select '不確実なものが確実なものの基礎である。', '三木清', 'classic', '人生論ノート', 'https://www.aozora.gr.jp/cards/000218/files/1914_63525.html', null, null
 where not exists (select 1 from words where text = '不確実なものが確実なものの基礎である。' and source_type = 'classic');
 
 insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '論理によって懐疑が出てくるのでなく、懐疑から論理が求められてくるのである。', '三木清', 'classic', '人生論ノート', 'https://www.aozora.gr.jp/cards/000218/files/1914_63525.html', null, null
-where not exists (select 1 from words where text = '論理によって懐疑が出てくるのでなく、懐疑から論理が求められてくるのである。' and source_type = 'classic');
-
-insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '個性とは別にタイプがあるのでなく、タイプは個性である。', '三木清', 'classic', '人生論ノート', 'https://www.aozora.gr.jp/cards/000218/files/1914_63525.html', null, null
-where not exists (select 1 from words where text = '個性とは別にタイプがあるのでなく、タイプは個性である。' and source_type = 'classic');
-
-insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '伝統の問題は死者の生命の問題である。', '三木清', 'classic', '人生論ノート', 'https://www.aozora.gr.jp/cards/000218/files/1914_63525.html', null, null
-where not exists (select 1 from words where text = '伝統の問題は死者の生命の問題である。' and source_type = 'classic');
+select '論理から疑いが生まれるのではない。疑いがあるから、論理が求められるのだ。', '三木清', 'classic', '人生論ノート', 'https://www.aozora.gr.jp/cards/000218/files/1914_63525.html', '論理によって懐疑が出てくるのでなく、懐疑から論理が求められてくるのである。', '原文(文語)より現代語に'
+where not exists (select 1 from words where text = '論理から疑いが生まれるのではない。疑いがあるから、論理が求められるのだ。' and source_type = 'classic');
 
 insert into words (text, author, source_type, source, source_url, original, translation_note)
 select '世界がぜんたい幸福にならないうちは個人の幸福はあり得ない', '宮沢賢治', 'classic', '農民芸術概論綱要', 'https://www.aozora.gr.jp/cards/000081/files/2386_13825.html', null, null
 where not exists (select 1 from words where text = '世界がぜんたい幸福にならないうちは個人の幸福はあり得ない' and source_type = 'classic');
 
 insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '正しく強く生きるとは銀河系を自らの中に意識してこれに応じて行くことである', '宮沢賢治', 'classic', '農民芸術概論綱要', 'https://www.aozora.gr.jp/cards/000081/files/2386_13825.html', null, null
-where not exists (select 1 from words where text = '正しく強く生きるとは銀河系を自らの中に意識してこれに応じて行くことである' and source_type = 'classic');
-
-insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '自我の意識は個人から集団社会宇宙と次第に進化する', '宮沢賢治', 'classic', '農民芸術概論綱要', 'https://www.aozora.gr.jp/cards/000081/files/2386_13825.html', null, null
-where not exists (select 1 from words where text = '自我の意識は個人から集団社会宇宙と次第に進化する' and source_type = 'classic');
-
-insert into words (text, author, source_type, source, source_url, original, translation_note)
-select 'われらは世界のまことの幸福を索ねよう　求道すでに道である', '宮沢賢治', 'classic', '農民芸術概論綱要', 'https://www.aozora.gr.jp/cards/000081/files/2386_13825.html', null, null
-where not exists (select 1 from words where text = 'われらは世界のまことの幸福を索ねよう　求道すでに道である' and source_type = 'classic');
-
-insert into words (text, author, source_type, source, source_url, original, translation_note)
-select '芸術をもてあの灰色の労働を燃せ', '宮沢賢治', 'classic', '農民芸術概論綱要', 'https://www.aozora.gr.jp/cards/000081/files/2386_13825.html', null, null
-where not exists (select 1 from words where text = '芸術をもてあの灰色の労働を燃せ' and source_type = 'classic');
-
-insert into words (text, author, source_type, source, source_url, original, translation_note)
-select 'われらは新たな美を創る　美学は絶えず移動する', '宮沢賢治', 'classic', '農民芸術概論綱要', 'https://www.aozora.gr.jp/cards/000081/files/2386_13825.html', null, null
-where not exists (select 1 from words where text = 'われらは新たな美を創る　美学は絶えず移動する' and source_type = 'classic');
+select 'わたしたちは、世界のほんとうの幸福を探しに行こう。探し求めること自体が、すでに道なのだ。', '宮沢賢治', 'classic', '農民芸術概論綱要', 'https://www.aozora.gr.jp/cards/000081/files/2386_13825.html', 'われらは世界のまことの幸福を索ねよう　求道すでに道である', '原文(文語)より現代語に'
+where not exists (select 1 from words where text = 'わたしたちは、世界のほんとうの幸福を探しに行こう。探し求めること自体が、すでに道なのだ。' and source_type = 'classic');
 
 insert into words (text, author, source_type, source, source_url, original, translation_note)
 select '科学者になるには自然を恋人としなければならない。', '寺田寅彦', 'classic', '科学者とあたま', 'https://www.aozora.gr.jp/cards/000042/files/2359_13797.html', null, null

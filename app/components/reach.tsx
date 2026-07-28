@@ -7,27 +7,32 @@ import type { ReachStats } from "@/lib/queries";
  *
  * 抽選プールに入れるだけでは、循環はピッチの中にしか存在しない。
  * ここに数字が出て初めて、ユーザーは輪が閉じたことを体験できる。
+ *
+ * まだ誰にも届いていなくても、点の数だけは出す。ホームに自分の痕跡が
+ * ひとつもないと、他人の言葉を見るだけの場所になってしまうため。
  */
 export function Reach({ stats }: { stats: ReachStats }) {
-  if (stats.total === 0) return null;
+  if (stats.points === 0) return null;
 
   return (
     <section className="animate-fade-up mt-14 border-t border-line pt-8">
-      <p className="text-center text-sm leading-loose">
-        {stats.today > 0 ? (
-          <>
-            あなたの言葉が、今日
-            <Count value={stats.today} />
-            人に届きました
-          </>
-        ) : (
-          <>
-            あなたの言葉は、これまでに
-            <Count value={stats.total} />
-            人に届いています
-          </>
-        )}
-      </p>
+      {stats.today > 0 ? (
+        <p className="text-center text-sm leading-loose">
+          あなたの言葉が、今日
+          <Count value={stats.today} />
+          人に届きました
+        </p>
+      ) : stats.total > 0 ? (
+        <p className="text-center text-sm leading-loose">
+          あなたの言葉は、これまでに
+          <Count value={stats.total} />
+          人に届いています
+        </p>
+      ) : (
+        <p className="text-center text-sm leading-loose text-muted">
+          あなたの言葉は、明日から誰かのもとに届きはじめます
+        </p>
+      )}
 
       {stats.today > 0 && stats.total > stats.today && (
         <p className="mt-2 text-center text-xs text-faint">
@@ -37,10 +42,10 @@ export function Reach({ stats }: { stats: ReachStats }) {
 
       <p className="mt-6 text-center">
         <Link
-          href="/book"
-          className="text-xs tracking-widest text-faint transition-colors hover:text-muted"
+          href="/trace"
+          className="text-xs tracking-widest text-faint transition-colors hover:text-accent"
         >
-          わたしの本を開く
+          わたしの軌跡 — {stats.points} の点
         </Link>
       </p>
     </section>

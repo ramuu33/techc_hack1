@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getBook, getUser } from "@/lib/queries";
+import { getPublicTrace, getUser } from "@/lib/queries";
 
-import { BookPages } from "../../components/book-pages";
+import { PublicTrace } from "../../components/trace-points";
 
-export default async function OtherBookPage({
+export default async function OtherTracePage({
   params,
 }: {
   params: Promise<{ userId: string }>;
@@ -15,25 +15,28 @@ export default async function OtherBookPage({
   const owner = await getUser(userId);
   if (!owner) notFound();
 
-  const pages = await getBook(owner.id);
+  const points = await getPublicTrace(owner.id);
 
   return (
     <div>
-      <div className="mb-10 text-center">
+      <div className="mb-12 text-center">
         <h2 className="text-sm tracking-[0.3em] text-muted">
-          {owner.nickname}の本
+          {owner.nickname}の軌跡
         </h2>
-        <p className="mt-3 text-xs text-faint">{pages.length} ページ</p>
+        <p className="mt-3 text-xs text-faint">{points.length} の点</p>
+        <p className="mt-4 text-xs leading-relaxed text-faint">
+          古いものから並んでいます
+        </p>
       </div>
 
-      <BookPages pages={pages} />
+      <PublicTrace points={points} />
 
       <p className="mt-14 text-center">
         <Link
           href="/others"
           className="text-xs tracking-widest text-faint transition-colors hover:text-muted"
         >
-          他の人の本へ戻る
+          他の人の軌跡へ戻る
         </Link>
       </p>
     </div>

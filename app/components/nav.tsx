@@ -5,8 +5,8 @@ import { usePathname } from "next/navigation";
 
 const LINKS = [
   { href: "/", label: "今日のことづて" },
-  { href: "/book", label: "わたしの本" },
-  { href: "/others", label: "他の人の本" },
+  { href: "/trace", label: "わたしの軌跡" },
+  { href: "/others", label: "他の人の軌跡" },
 ];
 
 export function Nav() {
