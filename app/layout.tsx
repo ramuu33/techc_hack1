@@ -43,8 +43,12 @@ export default async function RootLayout({
             )}
           </header>
 
-          {/* 下端は sticky なナビが重なるぶんだけ空けておく */}
-          <main className="flex-1 pb-24">{children}</main>
+          {/*
+            flex にしてあるのは、中身の少ない画面が縦位置を自分で決められるようにするため。
+            ナビは sticky なので最下部まで送れば自然位置に収まる。下に大きく空けると、
+            中央に置いた中身がそのぶん上へずれてしまうので、余白は控えめにする。
+          */}
+          <main className="flex flex-1 flex-col pb-10">{children}</main>
 
           <Nav />
         </div>

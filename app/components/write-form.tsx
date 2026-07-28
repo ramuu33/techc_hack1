@@ -72,7 +72,7 @@ export function WriteForm({
         maxLength={MAX_WORD_LENGTH}
         required
         placeholder="例)会議で黙っていたことを思い出した。あれは賛成したのと同じだったかもしれない。"
-        className="mt-3 w-full resize-none border-b border-line bg-transparent py-3 leading-loose outline-none placeholder:text-faint focus:border-accent"
+        className="mt-1 w-full resize-none border-b border-line bg-transparent py-3 leading-loose outline-none placeholder:text-faint focus:border-accent"
       />
 
       {state.error && <p className="mt-3 text-xs text-accent">{state.error}</p>}

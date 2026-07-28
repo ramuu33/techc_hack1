@@ -37,16 +37,8 @@ export function TodaysWord({
 
   if (!word) {
     return (
-      <div className="animate-fade-up pt-20 text-center">
-        <div
-          aria-hidden
-          className="mx-auto h-14 w-20 border border-line bg-surface"
-          style={{
-            clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
-            backgroundImage:
-              "linear-gradient(135deg, transparent 48%, var(--line) 48%, var(--line) 50%, transparent 50%), linear-gradient(-135deg, transparent 48%, var(--line) 48%, var(--line) 50%, transparent 50%)",
-          }}
-        />
+      <div className="animate-fade-up flex flex-1 flex-col justify-center text-center">
+        <Envelope />
 
         <p className="mt-10 text-sm leading-loose text-muted">
           今日のことづてが
@@ -109,5 +101,29 @@ export function TodaysWord({
 
       {error && <p className="mt-4 text-center text-xs text-accent">{error}</p>}
     </div>
+  );
+}
+
+/**
+ * 封筒。フタの線だけを引く。
+ * 対角線を2本引くと×印になり、壊れた画像のように見えてしまう。
+ */
+function Envelope() {
+  return (
+    <svg
+      viewBox="0 0 40 28"
+      width="80"
+      height="56"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="0.9"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="mx-auto text-line"
+    >
+      <rect x="0.45" y="0.45" width="39.1" height="27.1" rx="1.5" />
+      <path d="M1.6 1.9 L20 15.2 L38.4 1.9" />
+    </svg>
   );
 }
