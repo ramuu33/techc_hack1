@@ -6,6 +6,17 @@ import { MAX_NICKNAME_LENGTH } from "@/lib/constants";
 
 import { startSession, type ActionState } from "../actions";
 
+/**
+ * 初回訪問。聞くのはニックネームだけ。
+ *
+ * メールもパスワードも扱わない。認証UIを作らないという判断もあるが、
+ * それ以上に「気を使いすぎて言えない人」に向けたサービスで、
+ * 入口に個人情報を要求するのは筋が通らない。
+ * 送信すると cookie に匿名IDが入り、それが以後の身元になる。
+ *
+ * ここで先に「1日1回・書かなくてよい・明日誰かに届く」の3つを伝えている。
+ * 特に2つめが無いと、書けなかった日に脱落する。
+ */
 export function Onboarding() {
   const [state, action, pending] = useActionState<ActionState, FormData>(
     startSession,
@@ -27,6 +38,10 @@ export function Onboarding() {
         その言葉は明日、別の誰かに届きます。
       </p>
 
+      {/*
+        毎日書く義務にしないことを、最初に言い切っておく。
+        「続けられなかった」で離れるのを防ぐのは、機能ではなく文面の仕事。
+      */}
       <p className="mt-6 text-center text-xs leading-relaxed text-faint">
         書かない日があっても大丈夫です。
       </p>
@@ -50,6 +65,7 @@ export function Onboarding() {
           className="mt-1 w-full border-b border-line bg-transparent py-3 text-lg outline-none placeholder:text-faint focus:border-accent"
         />
 
+        {/* 何に使われる名前なのかを、入力する前に言う。 */}
         <p className="mt-3 text-xs leading-relaxed text-faint">
           あなたの言葉に添えられる名前です。メールアドレスもパスワードも使いません。
         </p>

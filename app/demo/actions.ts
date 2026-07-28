@@ -1,3 +1,16 @@
+/**
+ * デモ用の操作。発表の10分で循環を一周させるためだけにある。
+ *
+ * 通しているのは全部「時間の早送り」で、データの捏造ではない。
+ * 届けるときは通常と同じ deliveries の行を作るし、予約しても抽選の
+ * 仕組み自体は変えていない。画面に出るものは、普段どおり動いた結果と
+ * 区別がつかない。
+ *
+ * すべての関数が先頭で assertDemoMode() を通る。ALLOW_REROLL=false の
+ * 本番では、画面が 404 になるだけでなく、Server Action を直接叩かれても
+ * ここで止まる。
+ */
+
 "use server";
 
 import { revalidatePath } from "next/cache";
@@ -110,6 +123,8 @@ export async function deliverLatestToEveryone(): Promise<{
     return { message: "まだ言葉を書いていません。" };
   }
 
+  // 自分以外の全員へ。すでに届いている人は on conflict で飛ばすので、
+  // 何度押しても二重配信にはならない(発表中に押し間違えても安全)。
   const delivered = await sql<{ user_id: string }[]>`
     insert into deliveries (user_id, word_id)
     select u.id, ${latest.id}::uuid

@@ -14,12 +14,24 @@ import {
 
 export const metadata = { title: "デモ操作 — ことづて" };
 
+/**
+ * 発表用の操作盤。プロダクトの機能ではなく、発表のための道具。
+ *
+ * このプロダクトは「1日1回」「明日届く」という時間の設計が中核にあるので、
+ * 10分の発表で循環を一周させることが本来できない。ここはその時間を
+ * 早送りするためだけの画面で、通常の配信とまったく同じ処理を呼んでいる。
+ * 見せかけのデータを作っているわけではない。
+ *
+ * ALLOW_REROLL=true のときだけ開く。本番は false なので 404 になる。
+ */
 export default async function DemoPage() {
   // 本番デプロイでは存在しない画面
   if (!ALLOW_REROLL) notFound();
 
   const current = await getCurrentUser();
 
+  // ここだけ SQL を直に書いている。デモ画面でしか使わない問い合わせなので、
+  // 本編のデータ層(lib/queries.ts)には混ぜない。
   const users = await sql<
     { id: string; nickname: string; page_count: number }[]
   >`

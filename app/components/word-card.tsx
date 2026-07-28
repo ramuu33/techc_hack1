@@ -1,3 +1,13 @@
+/**
+ * 届いた言葉を1枚で見せるカード。偉人の言葉もユーザーの言葉も、
+ * 同じコンポーネントで同じ形に組む。
+ *
+ * データ構造の側で両者を同じテーブルに置いているのと同じことを、
+ * 見た目の側でもやっている。偉人用のカードとユーザー用のカードを
+ * 作り分けた時点で「誰でも思想家になりうる」は嘘になる。
+ * 違うのは敬称(さん)と、出典・原文の有無だけ。
+ */
+
 import { summarizeLineage } from "@/lib/lineage";
 import type { Word, WordWithLineage } from "@/lib/queries";
 
@@ -24,6 +34,8 @@ export function WordCard({
   word: WordWithLineage;
   animate?: boolean;
 }) {
+  // lineage は [いちばん古い祖先 … この言葉] の順。
+  // 末尾のひとつ前が、この言葉を直接生んだ親にあたる。
   const parent = word.lineage.at(-2) ?? null;
 
   return (
@@ -36,6 +48,11 @@ export function WordCard({
 
       <p className="mt-7 text-right text-sm text-muted">— {word.author}</p>
 
+      {/*
+        出典は必ずリンクにする。名言は誤帰属が多いジャンルなので、
+        「本当に本人が言ったのか」をその場で確かめられる状態にしておく。
+        検証可能であることは、このプロダクトの信頼性そのものにあたる。
+      */}
       {word.source && (
         <p className="mt-1 text-right text-xs text-faint">
           {word.source_url ? (
@@ -53,6 +70,11 @@ export function WordCard({
         </p>
       )}
 
+      {/*
+        原文。漢文・英文・文語から訳したものだけが持つ。
+        訳の妥当性を読者が照合できるようにするためのもので、
+        「訳した」と「作った」の違いを画面上で示す役割がある。
+      */}
       {word.original && (
         <p className="mt-4 border-t border-line pt-4 text-xs leading-relaxed text-faint">
           {word.original}
@@ -90,6 +112,10 @@ function Provenance({
         {parent.text}
       </blockquote>
 
+      {/*
+        3世代以上あるときだけ、連なり全体を出す。
+        2世代なら上の一文で足りていて、同じことを二度言うことになる。
+      */}
       {lineage.length > 2 && (
         <p className="mt-4 text-[0.7rem] tracking-wider text-muted">
           {summarizeLineage(lineage.map((link) => link.author))}

@@ -8,6 +8,16 @@ import { receiveTodaysWord } from "../actions";
 import { WordCard } from "./word-card";
 import { WriteForm } from "./write-form";
 
+/**
+ * 今日のことづて。受け取る前と後で、同じ場所の見た目が変わる。
+ *
+ *   受け取る前 … 点がひとつ、静かに待っている(演出をいちばん厚くする箇所)
+ *   受け取った後 … 言葉のカードと、書くための欄
+ *
+ * クライアント側で状態を持っているのは、受け取った瞬間のアニメーションを
+ * 出すため。サーバーから配られた画面をそのまま置き換えると、
+ * 「届いた」という出来事が画面上で起きたことにならない。
+ */
 export function TodaysWord({
   initialWord,
   allowReroll,
@@ -19,6 +29,8 @@ export function TodaysWord({
 }) {
   const [word, setWord] = useState(initialWord);
   const [error, setError] = useState<string | null>(null);
+  // このセッションで受け取ったばかりか。演出を出すかどうかの判定にだけ使う。
+  // ページを開き直したときに毎回アニメーションが走ると、演出が安くなる。
   const [justArrived, setJustArrived] = useState(false);
   const [pending, startTransition] = useTransition();
 
@@ -61,6 +73,8 @@ export function TodaysWord({
     );
   }
 
+  // 「もう書いた」の判定はサーバーから来るが、受け取り直した直後だけは
+  // その値が古い(新しい言葉にはまだ何も書いていない)。ここで打ち消す。
   const written = alreadyWritten && !justArrived;
 
   return (
@@ -90,6 +104,11 @@ export function TodaysWord({
         />
       </div>
 
+      {/*
+        引き直しは ALLOW_REROLL のときだけ出る。本番は false。
+        1日1回という制限は、情報を絞るためではなく、その1つを
+        ちゃんと考えられるようにするためのもの。開発とデモでだけ外す。
+      */}
       {allowReroll && (
         <button
           onClick={receive}

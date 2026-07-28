@@ -12,6 +12,8 @@ import type { ReachStats } from "@/lib/queries";
  * ひとつもないと、他人の言葉を見るだけの場所になってしまうため。
  */
 export function Reach({ stats }: { stats: ReachStats }) {
+  // 一度も書いていない人には、この区画ごと出さない。
+  // 0という数字を見せることは、まだ何もしていないことを突きつけるのと同じ。
   if (stats.points === 0) return null;
 
   return (
@@ -59,6 +61,7 @@ export function Reach({ stats }: { stats: ReachStats }) {
   );
 }
 
+/** 数字だけを大きく、色をつけて置く。文中で最初に目に入るのがここになるように。 */
 function Count({ value }: { value: number }) {
   return <span className="mx-1.5 text-xl text-accent">{value}</span>;
 }
