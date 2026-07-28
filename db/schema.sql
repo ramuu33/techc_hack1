@@ -55,6 +55,11 @@ create table if not exists deliveries (
   unique (user_id, word_id)
 );
 
+-- 偉人の言葉は本文が一意。seed を何度流しても重複しないための土台になる。
+-- ユーザーの言葉は対象外(別々の人が同じ一文を書くことはありうる)。
+create unique index if not exists words_classic_text_idx
+  on words (text) where source_type = 'classic';
+
 create index if not exists words_source_type_idx     on words (source_type);
 create index if not exists words_author_user_id_idx  on words (author_user_id);
 create index if not exists words_parent_word_id_idx  on words (parent_word_id);
