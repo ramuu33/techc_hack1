@@ -166,7 +166,9 @@ flowchart TB
 ```
 
 APIサーバーを別に立てず、Server Components と Server Actions でフロントとバックエンドを1プロジェクトに収めている。
-ブラウザからDBへの直接アクセスはなく、SQL はすべてサーバー側の `lib/queries.ts` に閉じている。
+ブラウザからDBへの直接アクセスはなく、SQL はすべてサーバー側にある。
+本編のクエリは読み書きとも [`lib/queries.ts`](lib/queries.ts) に集約し、Server Actions からは名前のついた関数として呼ぶ
+(デモ用画面 `app/demo/` だけは、そこでしか使わないクエリを同居させている)。
 
 ### データ構造
 
@@ -420,6 +422,7 @@ Transaction pooler(6543番)の接続文字列を使う。6543番のときは pre
 - [docs/concept.md](docs/concept.md) — 企画書(背景・仮説・設計判断・やらないこと)
 - [docs/sources.md](docs/sources.md) — 収録テキストの出典と著作権の確認
 - [docs/demo-script.md](docs/demo-script.md) — 10分の発表台本(事前準備・話す内容・事故対策・想定質問)
+- [docs/talk.md](docs/talk.md) — 読み上げ用の台本(口に出す文だけ・分量と話速を実測済み)
 - [docs/slides.html](docs/slides.html) — 発表スライド(1ファイル完結・タイマー内蔵・QRはその場で生成)
 
 ---

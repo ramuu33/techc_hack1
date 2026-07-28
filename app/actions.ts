@@ -14,13 +14,17 @@ import {
   MAX_WORD_LENGTH,
   MIN_WORD_LENGTH,
 } from "@/lib/constants";
-import { sql } from "@/lib/db";
 import {
+  createUser,
   drawDeepestLineage,
   drawWord,
   getTodaysDelivery,
   getWordWithLineage,
   hasReceivedBefore,
+  insertUserWord,
+  isWordDelivered,
+  updateUserWord,
+  wasDeliveredTo,
   type WordWithLineage,
 } from "@/lib/queries";
 import { getCurrentUser } from "@/lib/session";
@@ -42,12 +46,10 @@ export async function startSession(
     };
   }
 
-  const [user] = await sql<{ id: string }[]>`
-    insert into users (nickname) values (${nickname}) returning id
-  `;
+  const userId = await createUser(nickname);
 
   const store = await cookies();
-  store.set(SESSION_COOKIE, user.id, {
+  store.set(SESSION_COOKIE, userId, {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
@@ -126,29 +128,16 @@ export async function writeWord(
 
   // 実際に自分に届いた言葉に対してしか書けない。
   // Server Action は UI を経由せず直接呼べるため、ここで必ず検証する。
-  const [delivered] = await sql<{ id: string }[]>`
-    select w.id
-      from deliveries d
-      join words w on w.id = d.word_id
-     where d.user_id = ${user.id}::uuid
-       and w.id      = ${parentWordId}::uuid
-     limit 1
-  `.catch(() => []);
-
-  if (!delivered) {
+  if (!(await wasDeliveredTo(user.id, parentWordId))) {
     return { error: "その言葉はあなたに届いていません。" };
   }
 
-  await sql`
-    insert into words (text, author, source_type, author_user_id, parent_word_id)
-    values (
-      ${text},
-      ${user.nickname},
-      'user',
-      ${user.id}::uuid,
-      ${parentWordId}::uuid
-    )
-  `;
+  await insertUserWord({
+    text,
+    nickname: user.nickname,
+    userId: user.id,
+    parentWordId,
+  });
 
   revalidatePath("/");
   revalidatePath("/trace");
@@ -180,27 +169,14 @@ export async function editWord(
     return { error: `${MAX_WORD_LENGTH}文字以内で入力してください。` };
   }
 
-  const [target] = await sql<{ delivered: boolean }[]>`
-    select exists (
-             select 1 from deliveries d where d.word_id = w.id
-           ) as delivered
-      from words w
-     where w.id = ${wordId}::uuid
-       and w.author_user_id = ${user.id}::uuid
-  `.catch(() => []);
+  const delivered = await isWordDelivered(user.id, wordId);
 
-  if (!target) return { error: "その言葉は直せません。" };
-  if (target.delivered) {
+  if (delivered === null) return { error: "その言葉は直せません。" };
+  if (delivered) {
     return { error: "この言葉はもう誰かに届いているので、直せません。" };
   }
 
-  await sql`
-    update words
-       set text = ${text}
-     where id = ${wordId}::uuid
-       and author_user_id = ${user.id}::uuid
-       and not exists (select 1 from deliveries d where d.word_id = words.id)
-  `;
+  await updateUserWord(user.id, wordId, text);
 
   revalidatePath("/");
   revalidatePath("/trace");

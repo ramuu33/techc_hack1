@@ -427,3 +427,100 @@ export async function getUser(
   `.catch(() => []);
   return rows[0] ?? null;
 }
+
+/* ------------------------------------------------------------------ *
+ * 書き込み
+ *
+ * 読み取りと同じく、SQL はこのファイルの外に出さない。
+ * Server Action 側には「何をするか」だけが残り、どう問い合わせるかは
+ * ここに集まる。
+ * ------------------------------------------------------------------ */
+
+/** 初回訪問。ニックネームだけでユーザーを作る。 */
+export async function createUser(nickname: string): Promise<string> {
+  const [user] = await sql<{ id: string }[]>`
+    insert into users (nickname) values (${nickname}) returning id
+  `;
+  return user.id;
+}
+
+/**
+ * その言葉が、その人に実際に届いているか。
+ *
+ * Server Action は UI を経由せず直接呼べるので、書く前に必ず通す。
+ */
+export async function wasDeliveredTo(
+  userId: string,
+  wordId: string,
+): Promise<boolean> {
+  const rows = await sql<{ id: string }[]>`
+    select w.id
+      from deliveries d
+      join words w on w.id = d.word_id
+     where d.user_id = ${userId}::uuid
+       and w.id      = ${wordId}::uuid
+     limit 1
+  `.catch(() => []);
+  return rows.length > 0;
+}
+
+/** 届いた言葉をきっかけに、自分の言葉を書く。 */
+export async function insertUserWord(params: {
+  text: string;
+  nickname: string;
+  userId: string;
+  parentWordId: string;
+}): Promise<void> {
+  await sql`
+    insert into words (text, author, source_type, author_user_id, parent_word_id)
+    values (
+      ${params.text},
+      ${params.nickname},
+      'user',
+      ${params.userId}::uuid,
+      ${params.parentWordId}::uuid
+    )
+  `;
+}
+
+/**
+ * 自分の言葉が、まだ直せる状態か。
+ *
+ * null   … 自分の言葉ではない(または存在しない)
+ * true   … もう誰かに届いているので直せない
+ * false  … まだ誰にも届いていないので直せる
+ */
+export async function isWordDelivered(
+  userId: string,
+  wordId: string,
+): Promise<boolean | null> {
+  const rows = await sql<{ delivered: boolean }[]>`
+    select exists (
+             select 1 from deliveries d where d.word_id = w.id
+           ) as delivered
+      from words w
+     where w.id = ${wordId}::uuid
+       and w.author_user_id = ${userId}::uuid
+  `.catch(() => []);
+  return rows[0]?.delivered ?? null;
+}
+
+/**
+ * 書いた言葉を直す。
+ *
+ * 届いた後の書き換えは、条件式で二重に防いでいる。
+ * 呼び出し側の確認と実行の間に配信が起きても、ここで弾かれる。
+ */
+export async function updateUserWord(
+  userId: string,
+  wordId: string,
+  text: string,
+): Promise<void> {
+  await sql`
+    update words
+       set text = ${text}
+     where id = ${wordId}::uuid
+       and author_user_id = ${userId}::uuid
+       and not exists (select 1 from deliveries d where d.word_id = words.id)
+  `;
+}
