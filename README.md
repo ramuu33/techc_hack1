@@ -166,7 +166,9 @@ flowchart TB
 ```
 
 APIサーバーを別に立てず、Server Components と Server Actions でフロントとバックエンドを1プロジェクトに収めている。
-ブラウザからDBへの直接アクセスはなく、SQL はすべてサーバー側の `lib/queries.ts` に閉じている。
+ブラウザからDBへの直接アクセスはなく、SQL はすべてサーバー側にある。
+本編のクエリは読み書きとも [`lib/queries.ts`](lib/queries.ts) に集約し、Server Actions からは名前のついた関数として呼ぶ
+(デモ用画面 `app/demo/` だけは、そこでしか使わないクエリを同居させている)。
 
 ### データ構造
 
