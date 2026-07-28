@@ -50,7 +50,7 @@ export function Reach({ stats }: { stats: ReachStats }) {
       <p className="mt-6 text-center">
         <Link
           href="/trace"
-          className="text-xs tracking-widest text-faint transition-colors hover:text-accent"
+          className="text-xs tracking-widest text-faint underline decoration-line underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
         >
           わたしの軌跡 — {stats.points}つの点
         </Link>

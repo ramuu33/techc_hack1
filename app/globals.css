@@ -81,3 +81,13 @@ body {
     animation-duration: 0.01ms;
   }
 }
+
+/* キーボード操作時、押せるものすべてに同じフォーカス表示を出す */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
