@@ -8,7 +8,12 @@
  *
  * Node を使わずに Supabase の SQL エディタから投入したい場合は db/demo.sql を使う。
  */
-import { DEMO_NICKNAMES, ENTRIES, EXTRA_DELIVERIES } from "./demo-data";
+import {
+  DEMO_NICKNAMES,
+  ENTRIES,
+  EXTRA_DELIVERIES,
+  RETIRED_NICKNAMES,
+} from "./demo-data";
 import { loadEnv } from "./env";
 
 loadEnv();
@@ -17,7 +22,11 @@ async function main() {
   const { sql } = await import("../lib/db");
 
   // 作り直す。words と deliveries は cascade で消える。
-  await sql`delete from users where nickname = any(${DEMO_NICKNAMES})`;
+  // 旧名も一緒に消す。名前を変えたときの取り残しが本番に居座らないように。
+  await sql`delete from users where nickname = any(${[
+    ...DEMO_NICKNAMES,
+    ...RETIRED_NICKNAMES,
+  ]})`;
 
   const users = await sql<{ id: string; nickname: string }[]>`
     insert into users (nickname)
@@ -90,7 +99,7 @@ async function main() {
   console.log(
     `デモデータを投入しました。ユーザー ${users.length} 人 / ユーザーの言葉 ${wordCount} 件 / 配信履歴 ${deliveryCount} 件`,
   );
-  console.log("系譜: 芥川龍之介 → はるか → けんた → みお");
+  console.log("系譜: 芥川龍之介 → のらねこ → 三日坊主 → こもれび");
 
   await sql.end();
 }

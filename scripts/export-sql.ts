@@ -11,7 +11,12 @@ import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { DEMO_NICKNAMES, ENTRIES, EXTRA_DELIVERIES } from "./demo-data";
+import {
+  DEMO_NICKNAMES,
+  ENTRIES,
+  EXTRA_DELIVERIES,
+  RETIRED_NICKNAMES,
+} from "./demo-data";
 
 type SeedWord = {
   text: string;
@@ -114,7 +119,7 @@ function buildDemoSql() {
 
   lines.push("-- デモ用ユーザーを作り直す(words と deliveries は cascade で消える)");
   lines.push(
-    `delete from users where nickname in (${DEMO_NICKNAMES.map(lit).join(", ")});`,
+    `delete from users where nickname in (${[...DEMO_NICKNAMES, ...RETIRED_NICKNAMES].map(lit).join(", ")});`,
   );
   lines.push("");
 
