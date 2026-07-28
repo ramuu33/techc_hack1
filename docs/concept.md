@@ -388,7 +388,7 @@ repo/
 ├── lib/                   ← 設定・DB接続・クエリ・セッション
 ├── db/schema.sql          ← スキーマ
 ├── scripts/               ← seed / demo / reset
-├── data/words.seed.json   ← 偉人の言葉66件
+├── data/words.seed.json   ← 偉人の言葉48件
 ├── docs/
 │   ├── concept.md         ← 本ドキュメント
 │   └── sources.md         ← 出典と著作権の確認

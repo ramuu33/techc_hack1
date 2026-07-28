@@ -75,19 +75,27 @@ export function TodaysWord({
     <div>
       <WordCard word={word} animate={justArrived} />
 
-      {/* 別の言葉が届いたら書く欄を作り直す(前の言葉に対する入力を残さない) */}
-      <WriteForm
-        key={word.id}
-        wordId={word.id}
-        defaultOpen={!written}
-        openLabel="もう一度書く"
-      />
+      {/*
+        書く欄は最初から開かない。開いていると「何か書かなければ」という圧が出る。
+        受け取って読むだけで終われることが既定の状態であってほしい。
+        別の言葉が届いたら作り直す(前の言葉に対する入力を残さない)。
+      */}
+      <div className="mt-8">
+        <WriteForm
+          key={word.id}
+          wordId={word.id}
+          defaultOpen={false}
+          openLabel={written ? "もう一度書く" : "思ったことを書く"}
+        />
 
-      {!written && (
-        <p className="mt-4 text-center text-xs leading-relaxed text-faint">
-          いま書けなくても大丈夫です。わたしの軌跡から、あとで書けます。
-        </p>
-      )}
+        {!written && (
+          <p className="mt-5 text-center text-xs leading-relaxed text-faint">
+            書かなくても大丈夫です。
+            <br />
+            あとから、わたしの軌跡でも書けます。
+          </p>
+        )}
+      </div>
 
       {allowReroll && (
         <button

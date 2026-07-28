@@ -299,6 +299,8 @@ export type TraceEntry = {
   received: Word;
   written: Word | null;
   delivered_at: Date;
+  /** 書いた言葉が、すでに誰かに届いているか。届く前だけ直せる。 */
+  written_delivered: boolean;
 };
 
 /**
@@ -312,7 +314,11 @@ export async function getTrace(userId: string): Promise<TraceEntry[]> {
   return sql<TraceEntry[]>`
     select d.delivered_at,
            to_jsonb(r.*) as received,
-           case when w.id is null then null else to_jsonb(w.*) end as written
+           case when w.id is null then null else to_jsonb(w.*) end as written,
+           coalesce(
+             exists (select 1 from deliveries sent where sent.word_id = w.id),
+             false
+           ) as written_delivered
       from deliveries d
       join words r on r.id = d.word_id
       left join words w

@@ -107,12 +107,9 @@ export async function writeWord(
   const text = String(formData.get("text") ?? "").trim();
   const parentWordId = String(formData.get("parentWordId") ?? "");
 
-  // 書かれた言葉はそのまま抽選プールに入り、他の人に届く。
-  // 一文字だけの投稿が誰かの「今日の一言」になってしまわないよう下限を設ける。
+  // 押し間違いだけを弾く。量は求めない。
   if (text.length < MIN_WORD_LENGTH) {
-    return {
-      error: `もう少しだけ書いてみてください(${MIN_WORD_LENGTH}文字以上)。`,
-    };
+    return { error: "何も書かれていないようです。" };
   }
   if (text.length > MAX_WORD_LENGTH) {
     return { error: `${MAX_WORD_LENGTH}文字以内で入力してください。` };
@@ -142,6 +139,58 @@ export async function writeWord(
       ${user.id}::uuid,
       ${parentWordId}::uuid
     )
+  `;
+
+  revalidatePath("/");
+  revalidatePath("/trace");
+  revalidatePath("/others");
+  return { ok: true };
+}
+
+/**
+ * 書いた言葉を直す。
+ *
+ * 直せるのは、**まだ誰にも届いていないうちだけ**。
+ * 届いた後に書き換えると、それを読んで書いた人の言葉の親が変わってしまう。
+ * 渡ったらもう自分のものではない、というのはこのプロダクトが言っていることでもある。
+ */
+export async function editWord(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const user = await getCurrentUser();
+  if (!user) return { error: "セッションが見つかりません。" };
+
+  const wordId = String(formData.get("wordId") ?? "");
+  const text = String(formData.get("text") ?? "").trim();
+
+  if (text.length < MIN_WORD_LENGTH) {
+    return { error: "何も書かれていないようです。" };
+  }
+  if (text.length > MAX_WORD_LENGTH) {
+    return { error: `${MAX_WORD_LENGTH}文字以内で入力してください。` };
+  }
+
+  const [target] = await sql<{ delivered: boolean }[]>`
+    select exists (
+             select 1 from deliveries d where d.word_id = w.id
+           ) as delivered
+      from words w
+     where w.id = ${wordId}::uuid
+       and w.author_user_id = ${user.id}::uuid
+  `.catch(() => []);
+
+  if (!target) return { error: "その言葉は直せません。" };
+  if (target.delivered) {
+    return { error: "この言葉はもう誰かに届いているので、直せません。" };
+  }
+
+  await sql`
+    update words
+       set text = ${text}
+     where id = ${wordId}::uuid
+       and author_user_id = ${user.id}::uuid
+       and not exists (select 1 from deliveries d where d.word_id = words.id)
   `;
 
   revalidatePath("/");

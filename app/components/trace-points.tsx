@@ -1,5 +1,6 @@
 import type { TraceEntry, TracePoint, Word } from "@/lib/queries";
 
+import { EditableWord } from "./edit-form";
 import { displayAuthor } from "./word-card";
 import { WriteForm } from "./write-form";
 
@@ -27,9 +28,13 @@ export function MyTrace({ entries }: { entries: TraceEntry[] }) {
           <Origin word={entry.received} />
 
           {entry.written ? (
-            <p className="mt-5 leading-loose tracking-wide">
-              {entry.written.text}
-            </p>
+            <EditableWord
+              // 直したあとに作り直して、編集欄を畳む
+              key={entry.written.text}
+              wordId={entry.written.id}
+              text={entry.written.text}
+              delivered={entry.written_delivered}
+            />
           ) : (
             <WriteForm
               wordId={entry.received.id}

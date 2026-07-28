@@ -17,7 +17,7 @@ export function WriteForm({
   wordId,
   defaultOpen = true,
   openLabel = "書く",
-  label = "心が動いたら、書き残す",
+  label = "読んで、自分の何を思い出しましたか",
 }: {
   wordId: string;
   defaultOpen?: boolean;
@@ -46,7 +46,7 @@ export function WriteForm({
     return (
       <button
         onClick={() => setOpen(true)}
-        className="mt-5 text-xs tracking-widest text-faint transition-colors hover:text-accent"
+        className="mt-5 w-full border border-line py-4 text-center text-xs tracking-widest text-muted transition-colors hover:border-accent hover:text-accent"
       >
         {openLabel}
       </button>
@@ -71,7 +71,7 @@ export function WriteForm({
         minLength={MIN_WORD_LENGTH}
         maxLength={MAX_WORD_LENGTH}
         required
-        placeholder="この言葉を読んで、自分が何に気づいたか"
+        placeholder="例)会議で黙っていたことを思い出した。あれは賛成したのと同じだったかもしれない。"
         className="mt-3 w-full resize-none border-b border-line bg-transparent py-3 leading-loose outline-none placeholder:text-faint focus:border-accent"
       />
 
