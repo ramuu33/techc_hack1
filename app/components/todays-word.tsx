@@ -38,7 +38,7 @@ export function TodaysWord({
   if (!word) {
     return (
       <div className="animate-fade-up flex flex-1 flex-col justify-center text-center">
-        <Envelope />
+        <ArrivingPoint />
 
         <p className="mt-10 text-sm leading-loose text-muted">
           今日のことづてが
@@ -106,25 +106,31 @@ export function TodaysWord({
 }
 
 /**
- * 封筒。フタの線だけを引く。
- * 対角線を2本引くと×印になり、壊れた画像のように見えてしまう。
+ * 届こうとしている、ひとつの点。
+ *
+ * 封筒は使わない。ことづて(言伝)は口頭で人から人へ運ばれる言葉で、
+ * 手紙でも郵便でもない。このプロダクトの視覚言語は紙ではなく、点と線。
  */
-function Envelope() {
+function ArrivingPoint() {
   return (
     <svg
-      viewBox="0 0 40 28"
+      viewBox="0 0 80 80"
       width="80"
-      height="56"
+      height="80"
       fill="none"
-      stroke="currentColor"
-      strokeWidth="0.9"
-      strokeLinecap="round"
-      strokeLinejoin="round"
       aria-hidden="true"
-      className="mx-auto text-line"
+      className="mx-auto"
     >
-      <rect x="0.45" y="0.45" width="39.1" height="27.1" rx="1.5" />
-      <path d="M1.6 1.9 L20 15.2 L38.4 1.9" />
+      <circle cx="40" cy="40" r="32" stroke="var(--line)" strokeWidth="1" />
+      <circle
+        cx="40"
+        cy="40"
+        r="18"
+        stroke="var(--line)"
+        strokeWidth="1"
+        strokeDasharray="2.5 4"
+      />
+      <circle cx="40" cy="40" r="3.5" fill="var(--accent)" />
     </svg>
   );
 }

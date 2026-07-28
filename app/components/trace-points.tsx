@@ -13,13 +13,14 @@ import { WriteForm } from "./write-form";
  */
 export function MyTrace({ entries }: { entries: TraceEntry[] }) {
   return (
-    <ol className="space-y-14">
+    // 点は1本の線の上に打たれる。軌跡を文字どおり軌跡として見せる。
+    <ol className="relative ml-1 space-y-14 border-l border-line pl-6">
       {entries.map((entry, index) => (
-        <li key={entry.received.id} className="animate-fade-up">
+        <li key={entry.received.id} className="relative animate-fade-up">
+          <PointMarker filled={entry.written.length > 0} />
           <Header
             index={index}
             date={entry.delivered_at}
-            filled={entry.written.length > 0}
             suffix="に届いた"
           />
 
@@ -55,13 +56,13 @@ export function MyTrace({ entries }: { entries: TraceEntry[] }) {
 /** ⑤ 他の人の軌跡。書かれたものだけが古い順に並ぶ。 */
 export function PublicTrace({ points }: { points: TracePoint[] }) {
   return (
-    <ol className="space-y-14">
+    <ol className="relative ml-1 space-y-14 border-l border-line pl-6">
       {points.map((point, index) => (
-        <li key={point.written.id} className="animate-fade-up">
+        <li key={point.written.id} className="relative animate-fade-up">
+          <PointMarker filled />
           <Header
             index={index}
             date={point.written.created_at}
-            filled
             suffix="に書いた"
           />
           {point.origin && <Origin word={point.origin} />}
@@ -74,25 +75,35 @@ export function PublicTrace({ points }: { points: TracePoint[] }) {
   );
 }
 
+/**
+ * 線の上に打たれる点。書いたものは満ちた点、まだのものは開いた点。
+ * 状態は点そのものが持つので、見出しには番号と日付だけを残す。
+ */
+function PointMarker({ filled }: { filled: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className={`absolute top-1 -left-6 block h-2.5 w-2.5 -translate-x-1/2 rounded-full ${
+        filled ? "bg-accent" : "border border-faint bg-background"
+      }`}
+    />
+  );
+}
+
 function Header({
   index,
   date,
-  filled,
   suffix,
 }: {
   index: number;
   date: Date;
-  filled: boolean;
   /** 自分の軌跡では届いた日、他の人の軌跡では書いた日を出している */
   suffix: string;
 }) {
   return (
     <div className="flex items-baseline justify-between">
-      <span
-        className={`text-xs tracking-widest ${filled ? "text-accent" : "text-faint"}`}
-      >
-        {filled ? "●" : "○"}
-        <span className="ml-2">{String(index + 1).padStart(2, "0")}</span>
+      <span className="text-xs tracking-widest text-faint">
+        {String(index + 1).padStart(2, "0")}
       </span>
       <time dateTime={date.toISOString()} className="text-xs text-faint">
         {formatDate(date)}
