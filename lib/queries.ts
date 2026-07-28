@@ -2,6 +2,7 @@ import "server-only";
 
 import { CLASSIC_RATIO, TIMEZONE } from "./config";
 import { sql } from "./db";
+import { summarizeLineage } from "./lineage";
 
 export type Word = {
   id: string;
@@ -94,10 +95,25 @@ async function pickUndelivered(
               where d.user_id = ${userId}::uuid
                 and d.word_id = w.id
            )
-     order by random()
+     -- 配信回数の少ない言葉を優先し、同数の中では無作為に引く。
+     -- 完全な random() だと、プールが増えるほど1つの言葉が引かれる確率が薄まり、
+     -- 書いた言葉が誰にも届かないまま沈む。この並びなら、
+     -- すべての言葉がいつか誰かに届くことが保証される。
+     order by (select count(*) from deliveries sent where sent.word_id = w.id) asc,
+              random()
      limit 1
   `;
   return rows[0] ?? null;
+}
+
+/** 一度でも言葉を受け取ったことがあるか。初回の1語の特別扱いに使う。 */
+export async function hasReceivedBefore(userId: string): Promise<boolean> {
+  const rows = await sql<{ exists: boolean }[]>`
+    select exists (
+      select 1 from deliveries where user_id = ${userId}::uuid
+    ) as exists
+  `;
+  return rows[0]?.exists ?? false;
 }
 
 /**
@@ -118,6 +134,7 @@ export async function findDeepestUndelivered(
         select d.id, parent.parent_word_id, d.depth + 1
           from depths d
           join words parent on parent.id = d.parent_word_id
+         where d.depth < 500  -- 上と同じ安全弁
     ),
     deepest as (
       select id, max(depth) as depth
@@ -163,9 +180,8 @@ export async function peekDeepestLineage(
   if (!word) return null;
 
   const withLineage = await getWordWithLineage(word.id);
-  return (
-    withLineage?.lineage.map((link) => link.author).join(" → ") ?? word.author
-  );
+  if (!withLineage) return word.author;
+  return summarizeLineage(withLineage.lineage.map((link) => link.author));
 }
 
 /* ------------------------------------------------------------------ *
@@ -193,6 +209,10 @@ export async function getWordWithLineage(
         select parent.*, chain.depth + 1
           from words parent
           join chain on parent.id = chain.parent_word_id
+         -- 安全弁。親は必ず自分より前に存在するので循環は起きないが、
+         -- 万一データが壊れたときに再帰が止まらなくなるのを防ぐ。
+         -- 連鎖の深さを制限する意図ではない(表示は word-card 側で畳む)。
+         where chain.depth < 500
     )
     select id, text, author, source_type, source, source_url,
            original, translation_note, author_user_id, parent_word_id, created_at
@@ -304,6 +324,14 @@ export type WrittenWord = {
   word: Word;
   delivered: boolean;
   written_at: string;
+  /**
+   * この言葉を親にして生まれた、他の人の言葉(古い順)。
+   *
+   * 「受け取りました」は到達量だが、これは変化の証拠そのもの。
+   * 誰かがこの言葉に触れて、自分の言葉を書いた——
+   * 「思想家とは誰かの考えを変えた人」という定義を、書き手が満たした瞬間。
+   */
+  children: Word[];
 };
 
 /**
@@ -338,6 +366,14 @@ export async function getTrace(userId: string): Promise<TraceEntry[]> {
                           'written_at', w.created_at,
                           'delivered', exists (
                             select 1 from deliveries sent where sent.word_id = w.id
+                          ),
+                          'children', coalesce(
+                            (
+                              select jsonb_agg(to_jsonb(c.*) order by c.created_at)
+                                from words c
+                               where c.parent_word_id = w.id
+                            ),
+                            '[]'::jsonb
                           )
                         )
                         order by w.created_at

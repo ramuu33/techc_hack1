@@ -37,16 +37,8 @@ export function TodaysWord({
 
   if (!word) {
     return (
-      <div className="animate-fade-up pt-20 text-center">
-        <div
-          aria-hidden
-          className="mx-auto h-14 w-20 border border-line bg-surface"
-          style={{
-            clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
-            backgroundImage:
-              "linear-gradient(135deg, transparent 48%, var(--line) 48%, var(--line) 50%, transparent 50%), linear-gradient(-135deg, transparent 48%, var(--line) 48%, var(--line) 50%, transparent 50%)",
-          }}
-        />
+      <div className="animate-fade-up flex flex-1 flex-col justify-center text-center">
+        <ArrivingPoint />
 
         <p className="mt-10 text-sm leading-loose text-muted">
           今日のことづてが
@@ -86,22 +78,23 @@ export function TodaysWord({
           wordId={word.id}
           defaultOpen={false}
           openLabel={written ? "もう一度書く" : "思ったことを書く"}
+          note={
+            written ? undefined : (
+              <>
+                書かなくても大丈夫です。
+                <br />
+                あとから、わたしの軌跡でも書けます。
+              </>
+            )
+          }
         />
-
-        {!written && (
-          <p className="mt-5 text-center text-xs leading-relaxed text-faint">
-            書かなくても大丈夫です。
-            <br />
-            あとから、わたしの軌跡でも書けます。
-          </p>
-        )}
       </div>
 
       {allowReroll && (
         <button
           onClick={receive}
           disabled={pending}
-          className="mt-8 w-full text-xs tracking-widest text-faint transition-colors hover:text-muted disabled:opacity-40"
+          className="mx-auto mt-8 block text-xs tracking-widest text-faint underline decoration-line underline-offset-4 transition-colors hover:text-accent hover:decoration-accent disabled:opacity-40"
         >
           {pending ? "…" : "もう一度受け取る(デモ用)"}
         </button>
@@ -109,5 +102,35 @@ export function TodaysWord({
 
       {error && <p className="mt-4 text-center text-xs text-accent">{error}</p>}
     </div>
+  );
+}
+
+/**
+ * 届こうとしている、ひとつの点。
+ *
+ * 封筒は使わない。ことづて(言伝)は口頭で人から人へ運ばれる言葉で、
+ * 手紙でも郵便でもない。このプロダクトの視覚言語は紙ではなく、点と線。
+ */
+function ArrivingPoint() {
+  return (
+    <svg
+      viewBox="0 0 80 80"
+      width="80"
+      height="80"
+      fill="none"
+      aria-hidden="true"
+      className="mx-auto"
+    >
+      <circle cx="40" cy="40" r="32" stroke="var(--line)" strokeWidth="1" />
+      <circle
+        cx="40"
+        cy="40"
+        r="18"
+        stroke="var(--line)"
+        strokeWidth="1"
+        strokeDasharray="2.5 4"
+      />
+      <circle cx="40" cy="40" r="3.5" fill="var(--accent)" />
+    </svg>
   );
 }

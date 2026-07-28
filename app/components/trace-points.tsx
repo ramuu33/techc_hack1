@@ -13,13 +13,14 @@ import { WriteForm } from "./write-form";
  */
 export function MyTrace({ entries }: { entries: TraceEntry[] }) {
   return (
-    <ol className="space-y-14">
+    // 点は1本の線の上に打たれる。軌跡を文字どおり軌跡として見せる。
+    <ol className="relative ml-1 space-y-14 border-l border-line pl-6">
       {entries.map((entry, index) => (
-        <li key={entry.received.id} className="animate-fade-up">
+        <li key={entry.received.id} className="relative animate-fade-up">
+          <PointMarker filled={entry.written.length > 0} />
           <Header
             index={index}
             date={entry.delivered_at}
-            filled={entry.written.length > 0}
             suffix="に届いた"
           />
 
@@ -27,14 +28,16 @@ export function MyTrace({ entries }: { entries: TraceEntry[] }) {
 
           {/* 同じ言葉に対して書いたものが、古い順に積まれていく */}
           {entry.written.map((entryWord) => (
-            <EditableWord
-              // 直したあとに作り直して、編集欄を畳む
-              key={`${entryWord.word.id}-${entryWord.word.text}`}
-              wordId={entryWord.word.id}
-              text={entryWord.word.text}
-              delivered={entryWord.delivered}
-              writtenAt={entryWord.written_at}
-            />
+            // 直したあとに作り直して、編集欄を畳む
+            <div key={`${entryWord.word.id}-${entryWord.word.text}`}>
+              <EditableWord
+                wordId={entryWord.word.id}
+                text={entryWord.word.text}
+                delivered={entryWord.delivered}
+                writtenAt={entryWord.written_at}
+              />
+              <BornFrom words={entryWord.children} />
+            </div>
           ))}
 
           <WriteForm
@@ -53,13 +56,13 @@ export function MyTrace({ entries }: { entries: TraceEntry[] }) {
 /** ⑤ 他の人の軌跡。書かれたものだけが古い順に並ぶ。 */
 export function PublicTrace({ points }: { points: TracePoint[] }) {
   return (
-    <ol className="space-y-14">
+    <ol className="relative ml-1 space-y-14 border-l border-line pl-6">
       {points.map((point, index) => (
-        <li key={point.written.id} className="animate-fade-up">
+        <li key={point.written.id} className="relative animate-fade-up">
+          <PointMarker filled />
           <Header
             index={index}
             date={point.written.created_at}
-            filled
             suffix="に書いた"
           />
           {point.origin && <Origin word={point.origin} />}
@@ -72,30 +75,69 @@ export function PublicTrace({ points }: { points: TracePoint[] }) {
   );
 }
 
+/**
+ * 線の上に打たれる点。書いたものは満ちた点、まだのものは開いた点。
+ * 状態は点そのものが持つので、見出しには番号と日付だけを残す。
+ */
+function PointMarker({ filled }: { filled: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className={`absolute top-1 -left-6 block h-2.5 w-2.5 -translate-x-1/2 rounded-full ${
+        filled ? "bg-accent" : "border border-faint bg-background"
+      }`}
+    />
+  );
+}
+
 function Header({
   index,
   date,
-  filled,
   suffix,
 }: {
   index: number;
   date: Date;
-  filled: boolean;
   /** 自分の軌跡では届いた日、他の人の軌跡では書いた日を出している */
   suffix: string;
 }) {
   return (
     <div className="flex items-baseline justify-between">
-      <span
-        className={`text-xs tracking-widest ${filled ? "text-accent" : "text-faint"}`}
-      >
-        {filled ? "●" : "○"}
-        <span className="ml-2">{String(index + 1).padStart(2, "0")}</span>
+      <span className="text-xs tracking-widest text-faint">
+        {String(index + 1).padStart(2, "0")}
       </span>
       <time dateTime={date.toISOString()} className="text-xs text-faint">
         {formatDate(date)}
         {suffix}
       </time>
+    </div>
+  );
+}
+
+/**
+ * ③' 自分の言葉から生まれた、他の人の言葉。
+ *
+ * 「◯人が受け取りました」は到達量だが、これは変化の証拠そのもの。
+ * 返信ではない——書いた人はこちらに宛てておらず、こちらから返す手段もない。
+ * ただ「自分の言葉が誰かの前提を動かした」という事実だけが返ってくる。
+ * 件数は数えず、生まれた言葉そのものを見せる。
+ */
+function BornFrom({ words }: { words: Word[] }) {
+  if (words.length === 0) return null;
+
+  return (
+    <div className="mt-4 border-l border-line pl-4">
+      <p className="text-[0.7rem] tracking-wider text-accent">
+        この言葉から、ことづてが生まれました
+      </p>
+
+      {words.map((word) => (
+        <p key={word.id} className="mt-2 text-sm leading-loose text-muted">
+          {word.text}
+          <span className="ml-2 whitespace-nowrap text-xs text-faint">
+            — {displayAuthor(word)}
+          </span>
+        </p>
+      ))}
     </div>
   );
 }

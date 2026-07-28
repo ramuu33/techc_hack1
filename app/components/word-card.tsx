@@ -1,3 +1,4 @@
+import { summarizeLineage } from "@/lib/lineage";
 import type { Word, WordWithLineage } from "@/lib/queries";
 
 /** ユーザーの言葉には「さん」を付け、偉人はそのまま呼ぶ。 */
@@ -8,7 +9,7 @@ export function displayAuthor(word: Word) {
 /**
  * 短い箴言は大きく、長い述懐は小さく組む。
  * 偉人の言葉は一行で終わることが多く、ユーザーの言葉は数行になることが多い。
- * 同じ級数で組むと後者が画面を埋め尽くし、下にある「◯人に届きました」が隠れる。
+ * 同じ級数で組むと後者が画面を埋め尽くし、下にある「◯人が受け取りました」が隠れる。
  */
 function scaleFor(text: string) {
   if (text.length <= 45) return "text-[1.35rem] leading-[2.2]";
@@ -91,7 +92,7 @@ function Provenance({
 
       {lineage.length > 2 && (
         <p className="mt-4 text-[0.7rem] tracking-wider text-muted">
-          {lineage.map((link) => link.author).join(" → ")}
+          {summarizeLineage(lineage.map((link) => link.author))}
         </p>
       )}
     </div>

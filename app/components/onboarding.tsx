@@ -13,13 +13,22 @@ export function Onboarding() {
   );
 
   return (
-    <div className="animate-fade-up pt-10">
+    // 中身が少ないので上詰めだと下に大きな余白が残る。縦方向の中央に置く。
+    <div className="animate-fade-up flex flex-1 flex-col justify-center">
+      {/*
+        書く欄のラベルと同じ言い方に揃える。
+        「心が動いたら」は条件を言っているだけで、何をすればいいのか伝わらない。
+      */}
       <p className="text-center text-sm leading-loose text-muted">
         1日に1つ、言葉が届きます。
         <br />
-        心が動いたら、あなたの言葉を書き残してください。
+        読んで何かを思い出したら、書き残してください。
         <br />
         その言葉は明日、別の誰かに届きます。
+      </p>
+
+      <p className="mt-6 text-center text-xs leading-relaxed text-faint">
+        書かない日があっても大丈夫です。
       </p>
 
       <form action={action} className="mt-12">
@@ -37,7 +46,8 @@ export function Onboarding() {
           required
           autoComplete="off"
           placeholder="たろう"
-          className="mt-3 w-full border-b border-line bg-transparent py-3 text-lg outline-none placeholder:text-faint focus:border-accent"
+          // 入力欄自身が py-3 を持っているので、ラベルとの間はほとんど空けない
+          className="mt-1 w-full border-b border-line bg-transparent py-3 text-lg outline-none placeholder:text-faint focus:border-accent"
         />
 
         <p className="mt-3 text-xs leading-relaxed text-faint">

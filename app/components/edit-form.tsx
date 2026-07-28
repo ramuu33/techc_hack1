@@ -6,6 +6,25 @@ import { MAX_WORD_LENGTH, MIN_WORD_LENGTH } from "@/lib/constants";
 
 import { editWord, type ActionState } from "../actions";
 
+function PencilIcon() {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      width="14"
+      height="14"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M12.1 2.2a1.3 1.3 0 0 1 1.8 1.8L5.6 12.3l-2.4.6.6-2.4z" />
+      <path d="M10.9 3.4l1.8 1.8" />
+    </svg>
+  );
+}
+
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("ja-JP", {
     year: "numeric",
@@ -96,9 +115,12 @@ export function EditableWord({
         {!delivered && (
           <button
             onClick={() => setEditing(true)}
-            className="tracking-widest transition-colors hover:text-accent"
+            // アイコンだけだと読み上げに何も伝わらないので、名前を別に持たせる
+            aria-label="直す"
+            title="直す"
+            className="-m-2 rounded-sm p-2 transition-colors hover:text-accent focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
           >
-            直す
+            <PencilIcon />
           </button>
         )}
       </div>

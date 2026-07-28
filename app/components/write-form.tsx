@@ -18,11 +18,17 @@ export function WriteForm({
   defaultOpen = true,
   openLabel = "書く",
   label = "読んで、自分の何を思い出しましたか",
+  note,
 }: {
   wordId: string;
   defaultOpen?: boolean;
   openLabel?: string;
   label?: string;
+  /**
+   * 書く前にだけ添える一言。書いた後や入力中には出さない。
+   * 書いた直後に「書かなくても大丈夫」と言われても噛み合わない。
+   */
+  note?: React.ReactNode;
 }) {
   const [state, action, pending] = useActionState<ActionState, FormData>(
     writeWord,
@@ -44,12 +50,20 @@ export function WriteForm({
 
   if (!open) {
     return (
-      <button
-        onClick={() => setOpen(true)}
-        className="mt-5 w-full border border-line py-4 text-center text-xs tracking-widest text-muted transition-colors hover:border-accent hover:text-accent"
-      >
-        {openLabel}
-      </button>
+      <>
+        <button
+          onClick={() => setOpen(true)}
+          className="mt-5 w-full border border-line py-4 text-center text-xs tracking-widest text-muted transition-colors hover:border-accent hover:text-accent"
+        >
+          {openLabel}
+        </button>
+
+        {note && (
+          <p className="mt-5 text-center text-xs leading-relaxed text-faint">
+            {note}
+          </p>
+        )}
+      </>
     );
   }
 
@@ -72,7 +86,7 @@ export function WriteForm({
         maxLength={MAX_WORD_LENGTH}
         required
         placeholder="例)会議で黙っていたことを思い出した。あれは賛成したのと同じだったかもしれない。"
-        className="mt-3 w-full resize-none border-b border-line bg-transparent py-3 leading-loose outline-none placeholder:text-faint focus:border-accent"
+        className="mt-1 w-full resize-none border-b border-line bg-transparent py-3 leading-loose outline-none placeholder:text-faint focus:border-accent"
       />
 
       {state.error && <p className="mt-3 text-xs text-accent">{state.error}</p>}

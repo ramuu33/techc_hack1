@@ -20,6 +20,7 @@ import {
   drawWord,
   getTodaysDelivery,
   getWordWithLineage,
+  hasReceivedBefore,
   type WordWithLineage,
 } from "@/lib/queries";
 import { getCurrentUser } from "@/lib/session";
@@ -77,9 +78,17 @@ export async function receiveTodaysWord(): Promise<ReceiveState> {
   const reserved = ALLOW_REROLL && store.get(DEEP_LINEAGE_COOKIE)?.value === "1";
   if (reserved) store.delete(DEEP_LINEAGE_COOKIE);
 
-  const drawn = reserved
-    ? ((await drawDeepestLineage(user.id)) ?? (await drawWord(user.id)))
-    : await drawWord(user.id);
+  // 初めて受け取る1語も、来歴のある言葉を優先する。
+  // 通常の抽選は偉人7:ユーザー3なので、7割の確率で来歴なしの言葉になり、
+  // このプロダクトの新規性(来歴)が初対面で見えないままになる。
+  // 第一印象だけは、おみくじに任せない。
+  // ユーザーの言葉がまだ1つもなければ、自然に通常の抽選に落ちる。
+  const first = !(await hasReceivedBefore(user.id));
+
+  const drawn =
+    reserved || first
+      ? ((await drawDeepestLineage(user.id)) ?? (await drawWord(user.id)))
+      : await drawWord(user.id);
 
   if (!drawn) {
     // プールは在庫ではないので、これは「この人がまだ見ていない言葉が尽きた」という意味。
