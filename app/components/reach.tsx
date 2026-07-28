@@ -22,16 +22,16 @@ export function Reach({ stats }: { stats: ReachStats }) {
           <Count value={stats.today} />
           人に届きました
         </p>
-      ) : stats.total > 0 ? (
-        <p className="text-center text-sm leading-loose">
-          あなたの言葉は、これまでに
-          <Count value={stats.total} />
-          人に届いています
-        </p>
       ) : (
-        <p className="text-center text-sm leading-loose text-muted">
-          あなたの言葉は、明日から誰かのもとに届きはじめます
-        </p>
+        stats.total > 0 && (
+          <p className="text-center text-sm leading-loose">
+            あなたの言葉は、これまでに
+            <Count value={stats.total} />
+            人に届いています
+          </p>
+        )
+        // まだ誰にも届いていないときは何も言わない。
+        // 「明日から届きはじめます」は、書いた直後に出る文言と同じことを繰り返すため。
       )}
 
       {stats.today > 0 && stats.total > stats.today && (

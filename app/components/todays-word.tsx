@@ -78,15 +78,16 @@ export function TodaysWord({
           wordId={word.id}
           defaultOpen={false}
           openLabel={written ? "もう一度書く" : "思ったことを書く"}
+          note={
+            written ? undefined : (
+              <>
+                書かなくても大丈夫です。
+                <br />
+                あとから、わたしの軌跡でも書けます。
+              </>
+            )
+          }
         />
-
-        {!written && (
-          <p className="mt-5 text-center text-xs leading-relaxed text-faint">
-            書かなくても大丈夫です。
-            <br />
-            あとから、わたしの軌跡でも書けます。
-          </p>
-        )}
       </div>
 
       {allowReroll && (
