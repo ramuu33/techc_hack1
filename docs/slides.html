@@ -1,0 +1,1636 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ことづて — 発表スライド</title>
+    <style>
+      /*
+       * 発表スライド。docs/demo-script.md の10分構成に対応している。
+       *
+       * 外部リソースを一切読まない一枚のHTMLにしてある。会場のネットワークが
+       * 落ちてもスライドだけは必ず出るようにするため。
+       *
+       * 白地・サンセリフ。読み取りやすさを最優先にして、装飾は罫線と1色だけに
+       * 絞っている(プロダクト本体の夜の見た目とは別物として作っている)。
+       */
+      :root {
+        --bg: #ffffff;
+        --ink: #17150f;
+        --sub: #55524b;
+        --faint: #8b8781;
+        --line: #e3e0d9;
+        --tint: #f8f6f2;
+        --accent: #9a6b1f;
+        --accent-soft: #f2ead9;
+        color-scheme: light;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family:
+          "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic Medium",
+          "Yu Gothic", "Noto Sans JP", "Helvetica Neue", Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        cursor: default;
+      }
+
+      /*
+       * 投影機のアスペクト比が16:9でも4:3でも同じ見た目になるよう、
+       * 幅と高さの小さいほうを基準に全体を拡大縮小する。
+       * --fit は中身が入りきらないスライドだけJSが下げる(下の autofit)。
+       */
+      .deck {
+        --base: min(0.62vw, 1.1vh);
+        --s: var(--base);
+        position: relative;
+        height: 100%;
+        font-size: calc(var(--s) * 2.1);
+        line-height: 1.8;
+      }
+
+      /*
+       * --fit はスライドごとに効かせたいので、--s の再定義もスライド側で行う
+       * (カスタムプロパティは宣言された要素で解決されるため)。
+       */
+      .slide {
+        --fit: 1;
+        --s: calc(var(--base) * var(--fit));
+        position: absolute;
+        inset: 0;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        font-size: calc(var(--s) * 2.1);
+        padding: calc(var(--base) * 8) calc(var(--base) * 10)
+          calc(var(--base) * 11);
+      }
+
+      .slide[data-active] {
+        display: flex;
+        animation: rise 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(calc(var(--s) * 1.2));
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .slide[data-active] {
+          animation-duration: 0.01ms;
+        }
+      }
+
+      /* ---- 文字 ---- */
+
+      h1 {
+        font-size: calc(var(--s) * 8);
+        font-weight: 600;
+        letter-spacing: 0.38em;
+        line-height: 1.3;
+      }
+
+      h2 {
+        font-size: calc(var(--s) * 4.6);
+        font-weight: 600;
+        line-height: 1.5;
+        letter-spacing: 0.02em;
+      }
+
+      .lead {
+        font-size: calc(var(--s) * 3);
+        line-height: 1.85;
+      }
+
+      .big {
+        font-size: calc(var(--s) * 4.8);
+        font-weight: 600;
+        line-height: 1.55;
+      }
+
+      .huge {
+        font-size: calc(var(--s) * 6.4);
+        font-weight: 600;
+        line-height: 1.45;
+        letter-spacing: 0.02em;
+      }
+
+      .sub {
+        color: var(--sub);
+      }
+
+      .faint {
+        color: var(--faint);
+      }
+
+      em {
+        font-style: normal;
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      /* 覚えて帰ってほしい一言に引く下線 */
+      .mark {
+        background: linear-gradient(transparent 62%, var(--accent-soft) 62%);
+      }
+
+      .eyebrow {
+        display: flex;
+        align-items: center;
+        gap: calc(var(--s) * 1.6);
+        font-size: calc(var(--s) * 1.7);
+        letter-spacing: 0.34em;
+        color: var(--faint);
+        margin-bottom: calc(var(--s) * 3.4);
+      }
+
+      .eyebrow::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--line);
+      }
+
+      .stack > * + * {
+        margin-top: calc(var(--s) * 3);
+      }
+
+      .tight > * + * {
+        margin-top: calc(var(--s) * 1.2);
+      }
+
+      .quote {
+        border-left: calc(var(--s) * 0.35) solid var(--accent-soft);
+        padding-left: calc(var(--s) * 2.6);
+        color: var(--sub);
+      }
+
+      /* ---- 表 ---- */
+
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: calc(var(--s) * 2.2);
+      }
+
+      th,
+      td {
+        text-align: left;
+        padding: calc(var(--s) * 1.6) calc(var(--s) * 2);
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+        color: var(--sub);
+      }
+
+      thead th {
+        font-weight: 400;
+        color: var(--faint);
+        font-size: calc(var(--s) * 1.8);
+        letter-spacing: 0.12em;
+        padding-bottom: calc(var(--s) * 1);
+      }
+
+      td.who {
+        white-space: nowrap;
+        color: var(--ink);
+      }
+
+      /* 自分の行だけ、薄く塗って濃い字にする */
+      tr.mine td {
+        color: var(--ink);
+        background: var(--tint);
+        font-weight: 600;
+        border-bottom-color: var(--accent-soft);
+      }
+
+      tr.mine td.who {
+        color: var(--accent);
+      }
+
+      /* ---- 4分割(誰の/課題/解決/効果) ---- */
+
+      .grid4 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: calc(var(--s) * 3) calc(var(--s) * 5);
+      }
+
+      .cell {
+        border-top: 1px solid var(--line);
+        padding-top: calc(var(--s) * 1.8);
+      }
+
+      .cell h3 {
+        font-size: calc(var(--s) * 1.8);
+        font-weight: 400;
+        letter-spacing: 0.28em;
+        color: var(--faint);
+        margin-bottom: calc(var(--s) * 1.2);
+      }
+
+      .cell p {
+        font-size: calc(var(--s) * 2.4);
+        line-height: 1.75;
+        color: var(--ink);
+      }
+
+      /* ---- 点と線(プロダクトの視覚言語) ---- */
+
+      .chain {
+        display: flex;
+        align-items: flex-start;
+      }
+
+      .chain .node {
+        flex: 1;
+        position: relative;
+        padding-top: calc(var(--s) * 4.4);
+      }
+
+      .chain .node::before {
+        content: "";
+        position: absolute;
+        top: calc(var(--s) * 1.5);
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: var(--line);
+      }
+
+      .chain .node:first-child::before {
+        left: 50%;
+      }
+
+      .chain .node:last-child::before {
+        right: 50%;
+      }
+
+      .chain .node::after {
+        content: "";
+        position: absolute;
+        top: calc(var(--s) * 0.4);
+        left: 50%;
+        width: calc(var(--s) * 2.2);
+        height: calc(var(--s) * 2.2);
+        margin-left: calc(var(--s) * -1.1);
+        border-radius: 50%;
+        background: var(--accent);
+      }
+
+      .chain .name {
+        text-align: center;
+        color: var(--accent);
+        font-weight: 600;
+        font-size: calc(var(--s) * 2.4);
+      }
+
+      .chain .said {
+        margin-top: calc(var(--s) * 1.4);
+        padding: 0 calc(var(--s) * 1.4);
+        color: var(--sub);
+        font-size: calc(var(--s) * 1.9);
+        line-height: 1.75;
+      }
+
+      /* ---- 図 ---- */
+
+      figure {
+        display: flex;
+        justify-content: center;
+      }
+
+      svg {
+        width: 100%;
+        height: auto;
+      }
+
+      svg text {
+        fill: var(--sub);
+        font-family: inherit;
+      }
+
+      svg .lbl-strong {
+        fill: var(--ink);
+        font-weight: 600;
+      }
+
+      svg .lbl-accent {
+        fill: var(--accent);
+        font-weight: 600;
+      }
+
+      svg .box {
+        fill: var(--tint);
+        stroke: var(--line);
+      }
+
+      svg .box-accent {
+        fill: var(--accent-soft);
+        stroke: var(--accent);
+      }
+
+      svg .edge {
+        stroke: #c9c5bd;
+        fill: none;
+      }
+
+      svg .edge-accent {
+        stroke: var(--accent);
+        fill: none;
+      }
+
+      /* ---- 番号つきの項目 ---- */
+
+      ol.steps {
+        list-style: none;
+        counter-reset: n;
+      }
+
+      ol.steps li {
+        counter-increment: n;
+        position: relative;
+        padding-left: calc(var(--s) * 5.4);
+      }
+
+      ol.steps li + li {
+        margin-top: calc(var(--s) * 3.2);
+      }
+
+      ol.steps li::before {
+        content: counter(n);
+        position: absolute;
+        left: 0;
+        top: calc(var(--s) * 0.3);
+        width: calc(var(--s) * 3.2);
+        height: calc(var(--s) * 3.2);
+        border-radius: 50%;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: calc(var(--s) * 1.8);
+        font-weight: 600;
+        display: grid;
+        place-items: center;
+      }
+
+      /* 見出しの下に置く、読ませなくてもいい補足 */
+      .why {
+        margin-top: calc(var(--s) * 0.6);
+        color: var(--faint);
+        font-size: calc(var(--s) * 2);
+        line-height: 1.75;
+      }
+
+      ul.check {
+        list-style: none;
+      }
+
+      ul.check li {
+        position: relative;
+        padding-left: calc(var(--s) * 4);
+        font-size: calc(var(--s) * 2.5);
+        color: var(--sub);
+      }
+
+      ul.check li + li {
+        margin-top: calc(var(--s) * 1.8);
+      }
+
+      ul.check li::before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      .strike {
+        color: var(--faint);
+        text-decoration: line-through;
+        text-decoration-color: var(--faint);
+      }
+
+      .cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: calc(var(--s) * 6);
+        align-items: center;
+      }
+
+      code {
+        font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+        font-size: 0.9em;
+        color: var(--accent);
+        letter-spacing: 0;
+      }
+
+      .demo-shot {
+        height: calc(var(--s) * 58);
+        border: 1px solid var(--line);
+        border-radius: calc(var(--s) * 0.6);
+      }
+
+      /* ---- 画面下の進捗(線の上の点) ---- */
+
+      .rail {
+        position: absolute;
+        left: calc(var(--s) * 10);
+        right: calc(var(--s) * 10);
+        bottom: calc(var(--s) * 5);
+        display: flex;
+        align-items: center;
+      }
+
+      .rail .dots {
+        flex: 1;
+        display: flex;
+        align-items: center;
+      }
+
+      .rail .dot {
+        flex: 1;
+        height: 1px;
+        background: var(--line);
+        position: relative;
+      }
+
+      .rail .dot::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: calc(var(--s) * 0.85);
+        height: calc(var(--s) * 0.85);
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        background: var(--line);
+        transition: background 0.3s ease;
+      }
+
+      .rail .dot[data-done]::after {
+        background: #cdc8bf;
+      }
+
+      .rail .dot[data-now]::after {
+        background: var(--accent);
+        width: calc(var(--s) * 1.7);
+        height: calc(var(--s) * 1.7);
+      }
+
+      /* ---- タイマー ---- */
+
+      .clock {
+        position: absolute;
+        top: calc(var(--s) * 4);
+        right: calc(var(--s) * 5);
+        display: none;
+        align-items: baseline;
+        gap: calc(var(--s) * 1.6);
+        font-size: calc(var(--s) * 2);
+        letter-spacing: 0.1em;
+        font-variant-numeric: tabular-nums;
+        color: var(--faint);
+      }
+
+      .clock[data-on] {
+        display: flex;
+      }
+
+      .clock .now {
+        font-size: calc(var(--s) * 3);
+        color: var(--sub);
+      }
+
+      .clock[data-behind] .now {
+        color: #c0392b;
+      }
+
+      .clock .plan::before {
+        content: "予定 ";
+        font-size: 0.8em;
+      }
+
+      /* ---- 話す内容のメモ(Nで開閉。既定は非表示) ---- */
+
+      .notes {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: none;
+        padding: calc(var(--s) * 2) calc(var(--s) * 10);
+        background: var(--tint);
+        border-top: 1px solid var(--line);
+        color: var(--sub);
+        font-size: calc(var(--s) * 1.9);
+        line-height: 1.75;
+      }
+
+      .notes[data-on] {
+        display: block;
+      }
+
+      /* ---- ヘルプ ---- */
+
+      .help {
+        position: absolute;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.97);
+      }
+
+      .help[data-on] {
+        display: flex;
+      }
+
+      .help dl {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: calc(var(--s) * 1.6) calc(var(--s) * 4);
+        font-size: calc(var(--s) * 2.2);
+      }
+
+      .help dt {
+        color: var(--accent);
+        text-align: right;
+        letter-spacing: 0.1em;
+        font-weight: 600;
+      }
+
+      .help dd {
+        color: var(--sub);
+      }
+
+      #qr {
+        justify-content: flex-end;
+      }
+
+      #qr svg {
+        width: calc(var(--s) * 32);
+        height: auto;
+        border: 1px solid var(--line);
+        border-radius: calc(var(--s) * 0.5);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="deck" id="deck">
+      <!--
+        矢印の頭。図のあるスライドは display:none になることがあるので、
+        参照される定義は常に表示されている一枚にまとめておく。
+      -->
+      <svg width="0" height="0" aria-hidden="true" style="position: absolute">
+        <defs>
+          <marker
+            id="a"
+            viewBox="0 0 10 10"
+            refX="9"
+            refY="5"
+            markerWidth="7"
+            markerHeight="7"
+            orient="auto-start-reverse"
+          >
+            <path d="M0 0 L10 5 L0 10 z" fill="#9a6b1f" />
+          </marker>
+        </defs>
+      </svg>
+
+      <!-- ============ ① コンセプト(誰のため / 何の価値) ============ -->
+
+      <section class="slide" data-at="0:00" data-note="名乗ってから3秒だけ黙る。急がない。">
+        <div class="stack">
+          <h1>ことづて</h1>
+          <p class="lead sub">ひとつの言葉が、別の誰かの言葉を生んでいく場所。</p>
+          <p class="faint">言伝(ことづて)= 人から人へ託されて運ばれる言葉</p>
+        </div>
+      </section>
+
+      <section
+        class="slide"
+        data-at="0:15"
+        data-note="実体験。作り話に聞こえないよう、声の温度を上げない。"
+      >
+        <div class="stack">
+          <p class="eyebrow">はじまり</p>
+          <p class="huge">「掃除しろ」<br />「普通はやるものでしょ」</p>
+          <p class="lead sub">母と、何度も衝突しました。</p>
+        </div>
+      </section>
+
+      <section
+        class="slide"
+        data-at="0:35"
+        data-note="価値は「母を理解したこと」ではなく「自分の当たり前が見えたこと」。ここを言い切る。"
+      >
+        <div class="stack">
+          <p class="eyebrow">整理してみると</p>
+          <div class="cols">
+            <div class="tight">
+              <p class="big">家は<em>回復する場所</em></p>
+              <p class="faint">— 私の前提</p>
+            </div>
+            <div class="tight">
+              <p class="big">家は<em>共同生活の基盤</em></p>
+              <p class="faint">— 母の前提</p>
+            </div>
+          </div>
+          <p class="lead sub">掃除の問題ではなく、前提がズレていただけでした。</p>
+          <p class="big">
+            価値があったのは、<span class="mark">自分の当たり前が、初めて目に見えたこと</span>。
+          </p>
+        </div>
+      </section>
+
+      <section
+        class="slide"
+        data-at="0:55"
+        data-note="ここで個人の話から課題に一般化する。2文だけ。"
+      >
+        <div class="stack">
+          <p class="eyebrow">課題</p>
+          <p class="huge">自分の「当たり前」は、<br />自分では見えない。</p>
+          <p class="lead sub">見えるのは、<em>違う考えに触れたとき</em>だけ。</p>
+          <p class="lead sub">
+            でも — 違う考えに触れる場所は、いま、いちばんそれを必要とする人にとって
+            <em>安全ではありません。</em>
+          </p>
+        </div>
+      </section>
+
+      <section
+        class="slide"
+        data-at="1:15"
+        data-note="ユーザー価値25点はここから。具体例を1つ読み上げると刺さる。"
+      >
+        <div class="stack">
+          <p class="eyebrow">誰のためのサービスか</p>
+          <p class="huge">
+            自分の中で考えすぎる人。<br />人に気を使いすぎて、<br />言いたいことを飲み込む人。
+          </p>
+          <div class="quote tight">
+            <p class="lead">会議で違和感を持っても「まあいいか」で終わらせてしまう</p>
+            <p class="lead">友達が誰かの悪口を言っているとき、否定も肯定もできず黙る</p>
+            <p class="lead">SNSに書こうとして、投稿する直前に全部消す</p>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="slide"
+        data-at="1:35"
+        data-note="既存手段がなぜ効かないか。「そもそもそれができない人の話をしている」が効く。"
+      >
+        <div class="stack">
+          <p class="eyebrow">その人にとって、いまある場所は効かない</p>
+          <table>
+            <tbody>
+              <tr>
+                <td class="who">SNS・掲示板</td>
+                <td>
+                  自分に宛てて返信が来る。<em>宛てられると防御が立つ</em>し、
+                  名前を出して表明した意見は引っ込めにくい
+                </td>
+              </tr>
+              <tr>
+                <td class="who">名言アプリ</td>
+                <td>受け取って終わり。自分の側は何も動かない</td>
+              </tr>
+              <tr>
+                <td class="who">日記アプリ</td>
+                <td>自分の中だけで完結する。自分の前提は、自分では見えない</td>
+              </tr>
+              <tr>
+                <td class="who">人に相談する</td>
+                <td>相手にも気を使う。<em>そもそもそれができない人</em>の話をしています</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="lead sub">
+            必要なのは、<span class="mark"
+              >自分と関係のないところで生きている、他人の世界にふれること</span
+            >。
+          </p>
+        </div>
+      </section>
+
+      <section
+        class="slide"
+        data-at="2:00"
+        data-note="評価基準そのものに答える一枚。4つを順に指しながら読む。ここは飛ばさない。"
+      >
+        <div class="stack">
+          <p class="eyebrow">このサービスの価値</p>
+          <div class="grid4">
+            <div class="cell">
+              <h3>誰の</h3>
+              <p>自分の中で考えすぎる人。<br />気を使って言葉を飲み込む人。</p>
+            </div>
+            <div class="cell">
+              <h3>どんな課題を</h3>
+              <p>自分の前提が見えない。<br />それに気づける安全な場所がない。</p>
+            </div>
+            <div class="cell">
+              <h3>どう解決し</h3>
+              <p>
+                <em>誰にも宛てられていない</em>他人の言葉が、1日1回だけ届く。<br />
+                心が動いたら書く。返信も評価も来ない。
+              </p>
+            </div>
+            <div class="cell">
+              <h3>どんな効果があるか</h3>
+              <p>
+                自分の前提が見える。さらに、<em>自分の言葉が誰かの前提を動かした</em>ことが返ってくる。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="slide"
+        data-at="2:20"
+        data-note="「この輪だけでできています」。機能一覧ではなく循環として説明する。"
+      >
+        <div class="stack">
+          <p class="eyebrow">解決策 — ひとつの循環</p>
+          <figure>
+            <svg
+              viewBox="0 0 860 205"
+              role="img"
+              aria-label="言葉が届き、書き、誰かに届き、その人の心が動いて、また届く循環"
+            >
+              <g font-size="19">
+                <circle cx="90" cy="110" r="7" fill="#9a6b1f" />
+                <text class="lbl-strong" x="90" y="160" text-anchor="middle">① 言葉が届く</text>
+                <text x="90" y="188" text-anchor="middle" font-size="16">1日1回</text>
+
+                <circle cx="340" cy="110" r="7" fill="#9a6b1f" />
+                <text class="lbl-strong" x="340" y="160" text-anchor="middle">
+                  ② 自分の言葉を書く
+                </text>
+                <text x="340" y="188" text-anchor="middle" font-size="16">心が動いたら</text>
+
+                <circle cx="590" cy="110" r="7" fill="#9a6b1f" />
+                <text class="lbl-strong" x="590" y="160" text-anchor="middle">③ 誰かに届く</text>
+                <text x="590" y="188" text-anchor="middle" font-size="16">明日</text>
+
+                <circle cx="790" cy="110" r="7" fill="#9a6b1f" />
+                <text class="lbl-strong" x="790" y="160" text-anchor="middle">④ 心が動く</text>
+              </g>
+
+              <path class="edge-accent" d="M104 110 H326" marker-end="url(#a)" stroke-width="1" />
+              <path class="edge-accent" d="M354 110 H576" marker-end="url(#a)" stroke-width="1" />
+              <path class="edge-accent" d="M604 110 H776" marker-end="url(#a)" stroke-width="1" />
+              <path
+                class="edge-accent"
+                d="M790 97 V45 Q790 30 775 30 H105 Q90 30 90 45 V97"
+                marker-end="url(#a)"
+                stroke-width="1"
+              />
+              <text x="440" y="20" text-anchor="middle" font-size="16">また、誰かの①になる</text>
+            </svg>
+          </figure>
+          <p class="lead sub">
+            コメントも、いいねも、フォローも、通知もありません。<em>この輪だけ</em>でできています。
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ ② デモ ============ -->
+
+      <section
+        class="slide"
+        data-at="2:40"
+        data-note="ここで画面を本番URLに切り替える。3分20秒。落ちたらこの録画で代替する。"
+      >
+        <div class="stack" style="align-items: center; text-align: center">
+          <p class="eyebrow" style="align-self: stretch">デモ</p>
+          <img
+            class="demo-shot"
+            src="media/demo.gif"
+            alt="ことづてのデモ:言葉が届き、来歴をたどり、自分の言葉を託し、それが誰かの言葉を生むまで"
+          />
+          <p class="lead faint">※ 実演が動かないときだけ、この録画を再生する</p>
+        </div>
+      </section>
+
+      <section
+        class="slide"
+        data-at="6:00"
+        data-note="デモで見せたものを、効果の言葉に翻訳する。ここがユーザー価値の締め。"
+      >
+        <div class="stack">
+          <p class="eyebrow">使うと、何が変わるか</p>
+          <div class="cols">
+            <div class="tight">
+              <h3 class="faint" style="letter-spacing: 0.3em; font-size: 0.75em">これまで</h3>
+              <p class="lead sub">
+                会議で違和感を持っても、<br />「まあいいか」で終わらせる。<br />
+                モヤモヤは言葉にならないまま消える。
+              </p>
+            </div>
+            <div class="tight">
+              <h3 class="faint" style="letter-spacing: 0.3em; font-size: 0.75em">ことづて</h3>
+              <p class="lead">
+                「黙るのは中立じゃない」という<br />他人の一文が届く。<br />
+                <em>先月の自分が、見える。</em>
+              </p>
+            </div>
+          </div>
+          <p class="big">
+            そして書いた言葉が、明日、<span class="mark">別の誰かの前提を動かします。</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ 独自性 ============ -->
+
+      <section
+        class="slide"
+        data-at="6:20"
+        data-note="第一の山場。4人の内容が全部違うことを、指しながら読み上げる。"
+      >
+        <div class="stack">
+          <p class="eyebrow">デモで見た4世代</p>
+          <div class="chain">
+            <div class="node">
+              <p class="name">芥川龍之介</p>
+              <p class="said">危険思想と常識の関係について</p>
+            </div>
+            <div class="node">
+              <p class="name">はるか</p>
+              <p class="said">黙ってきたのは常識のためではなく、波風を避けたかっただけ</p>
+            </div>
+            <div class="node">
+              <p class="name">けんた</p>
+              <p class="said">会議で黙ることは、賛成したことになっていた</p>
+            </div>
+            <div class="node">
+              <p class="name">みお</p>
+              <p class="said">友達の悪口に、黙っていた自分</p>
+            </div>
+          </div>
+          <p class="big">内容は、<em>全部違います。</em></p>
+          <p class="lead sub">
+            残っているのは<span class="mark"
+              >「この言葉がなければ、この言葉は生まれなかった」という関係だけ</span
+            >。
+          </p>
+        </div>
+      </section>
+
+      <section class="slide" data-at="6:45" data-note="覚えて帰ってもらう一言。ここは強く。">
+        <div class="stack">
+          <p class="lead sub">リツイートは、内容が変わらずに広がる。</p>
+          <p class="lead sub">ここでは、<em>内容が変わらないと成立しない。</em></p>
+          <p class="huge">
+            転送ボタンを置いていないのではなく、<br /><span class="mark"
+              >転送が原理的に不可能</span
+            >な構造です。
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ ③ コード説明 ============ -->
+
+      <section
+        class="slide"
+        data-at="7:00"
+        data-note="ここからGitHubを投影。独自性25点の主張はこの1カラムに集約する。"
+      >
+        <div class="stack">
+          <p class="eyebrow">独自性は、1カラムに集約されている</p>
+          <p class="huge"><code>parent_word_id</code></p>
+          <p class="lead sub">
+            血統でも継承でもなく、<em>「この言葉がなければ、この言葉は生まれなかった」</em>を記録する。
+          </p>
+          <table>
+            <tbody>
+              <tr>
+                <td class="who">名言アプリ</td>
+                <td>持っていない</td>
+              </tr>
+              <tr>
+                <td class="who">日記アプリ</td>
+                <td>持っていない</td>
+              </tr>
+              <tr>
+                <td class="who">匿名SNS</td>
+                <td>持っていない</td>
+              </tr>
+              <tr class="mine">
+                <td class="who">ことづて</td>
+                <td>4世代の系譜が、再帰クエリ1回で取れる</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section
+        class="slide"
+        data-at="7:25"
+        data-note="「APIサーバーを別に立てていない」。技術・工夫30点のパート。"
+      >
+        <div class="stack">
+          <p class="eyebrow">アーキテクチャ</p>
+          <figure>
+            <svg viewBox="0 0 760 345" role="img" aria-label="ブラウザ、Next.js、Postgres の3層構成">
+              <g font-size="17" text-anchor="middle">
+                <rect class="box" x="180" y="10" width="400" height="58" rx="4" />
+                <text class="lbl-strong" x="380" y="44">ブラウザ</text>
+
+                <rect
+                  x="110"
+                  y="102"
+                  width="540"
+                  height="88"
+                  rx="4"
+                  fill="none"
+                  stroke="#d8d4cc"
+                  stroke-dasharray="3 4"
+                />
+                <text x="130" y="94" font-size="14" text-anchor="start">
+                  Next.js (App Router) / Vercel
+                </text>
+
+                <rect class="box" x="130" y="118" width="240" height="56" rx="4" />
+                <text class="lbl-strong" x="250" y="142">Server Components</text>
+                <text x="250" y="163" font-size="14">画面を組み立てる</text>
+
+                <rect class="box" x="390" y="118" width="240" height="56" rx="4" />
+                <text class="lbl-strong" x="510" y="142">Server Actions</text>
+                <text x="510" y="163" font-size="14">受け取る / 託す</text>
+
+                <rect class="box-accent" x="180" y="217" width="400" height="56" rx="4" />
+                <text class="lbl-accent" x="380" y="241">lib/queries.ts</text>
+                <text x="380" y="262" font-size="14">SQL はすべてここに閉じる</text>
+
+                <rect class="box" x="180" y="300" width="400" height="42" rx="4" />
+                <text class="lbl-strong" x="380" y="327">
+                  Postgres — users / words / deliveries
+                </text>
+              </g>
+
+              <path class="edge-accent" d="M380 68 V113" marker-end="url(#a)" stroke-width="1" />
+              <path class="edge" d="M250 174 V210" marker-end="url(#a)" stroke-width="1" />
+              <path class="edge" d="M510 174 V210" marker-end="url(#a)" stroke-width="1" />
+              <path class="edge-accent" d="M380 273 V293" marker-end="url(#a)" stroke-width="1" />
+            </svg>
+          </figure>
+          <p class="lead sub">
+            Server Components と Server Actions で、<em>APIサーバーなしの1プロジェクト構成</em>。<br />
+            ブラウザからDBへの直接アクセスはなく、SQLは全部サーバー側に閉じています。
+          </p>
+        </div>
+      </section>
+
+      <section
+        class="slide"
+        data-at="7:50"
+        data-note="テーブルは3つだけ。偉人もユーザーも同じ words に並ぶ、が思想の核。"
+      >
+        <div class="stack">
+          <p class="eyebrow">データ構造 — テーブルは3つだけ</p>
+          <figure>
+            <svg
+              viewBox="0 0 860 330"
+              role="img"
+              aria-label="words テーブルに偉人とユーザーが同じ形式で並び、parent_word_id が自己参照する"
+            >
+              <g font-size="17">
+                <rect class="box" x="20" y="55" width="170" height="66" rx="4" />
+                <text class="lbl-strong" x="105" y="86" text-anchor="middle">users</text>
+                <text x="105" y="108" text-anchor="middle" font-size="15">id / nickname</text>
+
+                <rect class="box" x="20" y="197" width="170" height="66" rx="4" />
+                <text class="lbl-strong" x="105" y="228" text-anchor="middle">deliveries</text>
+                <text x="105" y="250" text-anchor="middle" font-size="15">誰に何が届いたか</text>
+
+                <rect class="box-accent" x="320" y="30" width="370" height="260" rx="4" />
+                <text class="lbl-accent" x="505" y="65" text-anchor="middle">words</text>
+                <line x1="340" y1="82" x2="670" y2="82" stroke="#ddd2ba" />
+
+                <text class="lbl-strong" x="344" y="115">text</text>
+                <text x="666" y="115" text-anchor="end" font-size="15">言葉そのもの</text>
+                <text class="lbl-strong" x="344" y="147">source_type</text>
+                <text x="666" y="147" text-anchor="end" font-size="15">classic / user</text>
+                <text class="lbl-strong" x="344" y="179">author_user_id</text>
+                <text x="666" y="179" text-anchor="end" font-size="15">書いた人</text>
+                <text class="lbl-accent" x="344" y="211">parent_word_id</text>
+                <text class="lbl-accent" x="666" y="211" text-anchor="end" font-size="15">
+                  この言葉を生んだ言葉
+                </text>
+                <text class="lbl-strong" x="344" y="243">source_url / original</text>
+                <text x="666" y="243" text-anchor="end" font-size="15">出典と原文</text>
+              </g>
+
+              <path class="edge" d="M190 88 H312" marker-end="url(#a)" stroke-width="1" />
+              <text x="251" y="78" text-anchor="middle" font-size="14">書く</text>
+              <path class="edge" d="M190 230 H312" marker-end="url(#a)" stroke-width="1" />
+              <text x="251" y="220" text-anchor="middle" font-size="14">届ける</text>
+              <path
+                class="edge-accent"
+                d="M690 205 Q762 205 762 160 Q762 115 718 115 H698"
+                marker-end="url(#a)"
+                stroke-width="1"
+              />
+              <text class="lbl-accent" x="774" y="165" font-size="14">自己参照</text>
+            </svg>
+          </figure>
+          <p class="lead sub">
+            <em>偉人の言葉もユーザーの言葉も、同じテーブルに同じ形式で並びます。</em><br />
+            「誰もが思想家になりうる」という思想を、データ構造で表現しました。
+          </p>
+        </div>
+      </section>
+
+      <section
+        class="slide"
+        data-at="8:15"
+        data-note="3つとも「やらなかったこと」が理由になっている点を強調する。"
+      >
+        <div class="stack">
+          <p class="eyebrow">工夫・苦労した点</p>
+          <ol class="steps">
+            <li>
+              <p class="lead">引用の正しさを、<em>データ構造で担保した</em></p>
+              <p class="why">
+                48件すべて原典から手作業で採取。全件に出典URL、訳出27件に原文を併記。
+                <span style="color: var(--accent)">実行時にAIは1回も呼んでいない。</span>
+              </p>
+            </li>
+            <li>
+              <p class="lead">抽選を、<em>運任せにしなかった</em></p>
+              <p class="why">
+                初めての1語は必ず来歴つき。配信回数の少ない言葉を優先し、
+                書いた言葉が誰にも読まれずに沈まないことを保証。
+              </p>
+            </li>
+            <li>
+              <p class="lead"><span class="strike">紙</span>を捨てて、<em>点と線</em>にした</p>
+              <p class="why">
+                最初は手紙のメタファーで作り、途中で全部捨てた。
+                ことづては口頭で運ばれる言葉で、紙ではないから。
+              </p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section
+        class="slide"
+        data-at="8:40"
+        data-note="完成度20点。ここは事実を淡々と読み上げるだけでよい。"
+      >
+        <div class="stack">
+          <p class="eyebrow">できていること</p>
+          <ul class="check">
+            <li>3画面 + デモ用画面すべて実装済み、<em>本番にデプロイ済み</em>(Vercel + Supabase)</li>
+            <li>偉人の言葉48件、<em>全件に出典URL</em>、訳出27件に原文を併記</li>
+            <li>4世代の系譜が、モックではなく<em>実データ</em>で動いている</li>
+            <li>実行時にAIを呼ぶ処理は<em>ゼロ</em>。配信も抽選も来歴もSQLだけ</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ============ 締め ============ -->
+
+      <section
+        class="slide"
+        data-at="9:00"
+        data-note="「全部、意図して作らなかった」。機能不足ではないと明言する。"
+      >
+        <div class="stack">
+          <p class="eyebrow">作らなかったもの</p>
+          <p class="huge strike">コメント　返信　いいね　通知</p>
+          <p class="big"><em>全部、意図して作りませんでした。</em></p>
+          <p class="lead sub">
+            人がオンラインで変われないのは、言葉が自分に宛てられているから。<br />
+            宛てられると防御が立つ。だから<em>誰にも宛てられない構造</em>にしました。
+          </p>
+        </div>
+      </section>
+
+      <section class="slide" data-at="9:20" data-note="実装は既存データを引くだけ、と現実味を添える。">
+        <div class="stack">
+          <p class="eyebrow">これから作りたいもの</p>
+          <h2 class="huge">再会</h2>
+          <p class="lead sub">
+            同じ言葉が数年後にもう一度届いたとき、<em>当時の自分が書いた言葉を添えて見せる</em>。<br />
+            過去の点と今の点が、同じ言葉の上で向き合う。
+          </p>
+          <p class="lead faint">軌跡というメタファーの完成形で、実装は既存データを引くだけです。</p>
+        </div>
+      </section>
+
+      <section
+        class="slide"
+        data-at="9:40"
+        data-note="最後の一文を言い切ってから、2秒黙る。そのままQRを出して質疑へ。"
+      >
+        <div class="stack">
+          <div class="cols" style="grid-template-columns: 1.85fr 1fr">
+            <div class="stack">
+              <h1>ことづて</h1>
+              <p class="big">
+                いま、この場で私が書いた言葉は、<br /><span class="mark">明日、誰かに届きます。</span>
+              </p>
+              <p class="lead sub">
+                できるのは、衝突が起きる前に、<br />
+                自分の前提が見える機会を1日1回つくることだけ。<br />
+                それで十分価値があると、私は思っています。
+              </p>
+              <p class="lead" style="color: var(--accent)" id="qr-url"></p>
+            </div>
+            <figure id="qr"></figure>
+          </div>
+        </div>
+      </section>
+
+      <div class="rail">
+        <div class="dots" id="dots"></div>
+      </div>
+
+      <div class="clock" id="clock">
+        <span class="plan" id="plan">0:00</span>
+        <span class="now" id="now">0:00</span>
+      </div>
+
+      <div class="notes" id="notes"></div>
+
+      <div class="help" id="help">
+        <dl>
+          <dt>→ ↓ Space</dt>
+          <dd>次へ</dd>
+          <dt>← ↑</dt>
+          <dd>前へ</dd>
+          <dt>T</dt>
+          <dd>タイマーの開始 / 一時停止</dd>
+          <dt>R</dt>
+          <dd>タイマーをリセット</dd>
+          <dt>N</dt>
+          <dd>話す内容のメモを開閉(既定は非表示)</dd>
+          <dt>F</dt>
+          <dd>全画面</dd>
+          <dt>?</dt>
+          <dd>この一覧</dd>
+        </dl>
+      </div>
+    </div>
+
+    <script>
+      /* ============================================================
+       * 最後のスライドに出すURLとQRコード。
+       *
+       * ★ 当日ここだけ本番URLに書き換える。QRはその場で符号化して描くので、
+       *   画像を用意する必要はなく、会場のネットワークにも依存しない。
+       * ============================================================ */
+      const QR_URL = "https://techc-hack1.vercel.app";
+
+      /*
+       * QRの符号化(バイトモード / 誤り訂正レベルM / 型番1〜6)。
+       * URLの長さなら型番6(108バイト)に必ず収まるので、型番7以降でだけ必要になる
+       * 型番情報ブロックは実装していない。
+       */
+      function qrModules(text) {
+        const data = new TextEncoder().encode(text);
+        // 型番 → [総コードワード数, 1ブロックあたりのECコードワード数, ブロック数]
+        const SPEC = [
+          null,
+          [26, 10, 1],
+          [44, 16, 1],
+          [70, 26, 1],
+          [100, 18, 2],
+          [134, 24, 2],
+          [172, 16, 4],
+        ];
+
+        let ver = 0;
+        let dataCw = 0;
+        let ecPer = 0;
+        let nBlocks = 0;
+        for (let v = 1; v <= 6; v++) {
+          const [total, ec, blocks] = SPEC[v];
+          if (total - ec * blocks >= data.length + 2) {
+            ver = v;
+            dataCw = total - ec * blocks;
+            ecPer = ec;
+            nBlocks = blocks;
+            break;
+          }
+        }
+        if (!ver) throw new Error("URLが長すぎてQRに収まりません");
+
+        // --- ビット列を組む ---
+        const bits = [];
+        const put = (val, n) => {
+          for (let i = n - 1; i >= 0; i--) bits.push((val >> i) & 1);
+        };
+        put(0b0100, 4); // バイトモード
+        put(data.length, 8);
+        for (const b of data) put(b, 8);
+        for (let i = 0; i < 4 && bits.length < dataCw * 8; i++) bits.push(0);
+        while (bits.length % 8) bits.push(0);
+
+        const bytes = [];
+        for (let i = 0; i < bits.length; i += 8) {
+          bytes.push(bits.slice(i, i + 8).reduce((n, b) => (n << 1) | b, 0));
+        }
+        for (let i = 0; bytes.length < dataCw; i++) bytes.push(i % 2 ? 0x11 : 0xec);
+
+        // --- GF(256) と Reed-Solomon ---
+        const EXP = new Uint8Array(512);
+        const LOG = new Uint8Array(256);
+        for (let i = 0, x = 1; i < 255; i++) {
+          EXP[i] = x;
+          LOG[x] = i;
+          x <<= 1;
+          if (x & 256) x ^= 0x11d;
+        }
+        for (let i = 255; i < 512; i++) EXP[i] = EXP[i - 255];
+        const mul = (a, b) => (a && b ? EXP[LOG[a] + LOG[b]] : 0);
+
+        let gen = [1];
+        for (let i = 0; i < ecPer; i++) {
+          const next = new Array(gen.length + 1).fill(0);
+          for (let j = 0; j < gen.length; j++) {
+            next[j] ^= gen[j];
+            next[j + 1] ^= mul(gen[j], EXP[i]);
+          }
+          gen = next;
+        }
+
+        const remainder = (block) => {
+          const r = [...block, ...new Array(ecPer).fill(0)];
+          for (let i = 0; i < block.length; i++) {
+            const f = r[i];
+            if (!f) continue;
+            for (let j = 0; j < gen.length; j++) r[i + j] ^= mul(gen[j], f);
+          }
+          return r.slice(block.length);
+        };
+
+        const per = dataCw / nBlocks;
+        const blocks = [];
+        const eccs = [];
+        for (let i = 0; i < nBlocks; i++) {
+          const b = bytes.slice(i * per, (i + 1) * per);
+          blocks.push(b);
+          eccs.push(remainder(b));
+        }
+        const out = [];
+        for (let i = 0; i < per; i++) for (const b of blocks) out.push(b[i]);
+        for (let i = 0; i < ecPer; i++) for (const e of eccs) out.push(e[i]);
+
+        // --- 配置 ---
+        const size = 17 + 4 * ver;
+        const m = Array.from({ length: size }, () => new Array(size).fill(null));
+        const fixed = Array.from({ length: size }, () => new Array(size).fill(false));
+        const mark = (r, c, v) => {
+          m[r][c] = v;
+          fixed[r][c] = true;
+        };
+
+        const finder = (r0, c0) => {
+          for (let i = -1; i <= 7; i++) {
+            for (let j = -1; j <= 7; j++) {
+              const r = r0 + i;
+              const c = c0 + j;
+              if (r < 0 || c < 0 || r >= size || c >= size) continue;
+              const ring = i >= 0 && i <= 6 && j >= 0 && j <= 6;
+              const on =
+                ring &&
+                (i === 0 || i === 6 || j === 0 || j === 6 ||
+                  (i >= 2 && i <= 4 && j >= 2 && j <= 4));
+              mark(r, c, on ? 1 : 0);
+            }
+          }
+        };
+        finder(0, 0);
+        finder(0, size - 7);
+        finder(size - 7, 0);
+
+        for (let i = 8; i < size - 8; i++) {
+          mark(6, i, i % 2 === 0 ? 1 : 0);
+          mark(i, 6, i % 2 === 0 ? 1 : 0);
+        }
+
+        if (ver >= 2) {
+          const c0 = [0, 0, 18, 22, 26, 30, 34][ver];
+          for (let i = -2; i <= 2; i++) {
+            for (let j = -2; j <= 2; j++) {
+              mark(c0 + i, c0 + j, Math.max(Math.abs(i), Math.abs(j)) === 1 ? 0 : 1);
+            }
+          }
+        }
+
+        // 形式情報の場所を先に押さえる(データがここに流れ込まないように)
+        for (let i = 0; i < 9; i++) {
+          if (!fixed[8][i]) mark(8, i, 0);
+          if (!fixed[i][8]) mark(i, 8, 0);
+        }
+        for (let i = size - 8; i < size; i++) {
+          if (!fixed[8][i]) mark(8, i, 0);
+          if (!fixed[i][8]) mark(i, 8, 0);
+        }
+        mark(size - 8, 8, 1); // 常に黒のモジュール
+
+        const stream = [];
+        for (const b of out) for (let i = 7; i >= 0; i--) stream.push((b >> i) & 1);
+
+        let dir = -1;
+        let row = size - 1;
+        let at = 0;
+        for (let col = size - 1; col > 0; col -= 2) {
+          if (col === 6) col--; // タイミングパターンの列は飛ばす
+          for (;;) {
+            for (const c of [col, col - 1]) {
+              if (m[row][c] === null) m[row][c] = at < stream.length ? stream[at++] : 0;
+            }
+            row += dir;
+            if (row < 0 || row >= size) {
+              row -= dir;
+              dir = -dir;
+              break;
+            }
+          }
+        }
+
+        // --- マスクを8通り試して、いちばん減点の少ないものを選ぶ ---
+        const MASKS = [
+          (r, c) => (r + c) % 2 === 0,
+          (r, c) => r % 2 === 0,
+          (r, c) => c % 3 === 0,
+          (r, c) => (r + c) % 3 === 0,
+          (r, c) => (((r / 2) | 0) + ((c / 3) | 0)) % 2 === 0,
+          (r, c) => ((r * c) % 2) + ((r * c) % 3) === 0,
+          (r, c) => ((((r * c) % 2) + ((r * c) % 3)) % 2) === 0,
+          (r, c) => ((((r + c) % 2) + ((r * c) % 3)) % 2) === 0,
+        ];
+
+        const formatBits = (mask) => {
+          const d = (0b00 << 3) | mask; // 誤り訂正レベル M = 00
+          let v = d << 10;
+          for (let i = 4; i >= 0; i--) if (v & (1 << (i + 10))) v ^= 0x537 << i;
+          return ((d << 10) | v) ^ 0x5412;
+        };
+
+        const penalty = (g) => {
+          let p = 0;
+          const line = (get) => {
+            for (let a = 0; a < size; a++) {
+              let run = 1;
+              const seq = [];
+              for (let b = 0; b < size; b++) {
+                const v = get(a, b);
+                seq.push(v);
+                if (b > 0 && v === get(a, b - 1)) run++;
+                else {
+                  if (run >= 5) p += 3 + (run - 5);
+                  run = 1;
+                }
+              }
+              if (run >= 5) p += 3 + (run - 5);
+              // 1:1:3:1:1 の並び(ファインダーと紛らわしい形)
+              const s = seq.join("");
+              for (const pat of ["1011101" + "0000", "0000" + "1011101"]) {
+                let i = s.indexOf(pat);
+                while (i !== -1) {
+                  p += 40;
+                  i = s.indexOf(pat, i + 1);
+                }
+              }
+            }
+          };
+          line((a, b) => g[a][b]);
+          line((a, b) => g[b][a]);
+
+          for (let r = 0; r < size - 1; r++) {
+            for (let c = 0; c < size - 1; c++) {
+              const v = g[r][c];
+              if (v === g[r][c + 1] && v === g[r + 1][c] && v === g[r + 1][c + 1]) p += 3;
+            }
+          }
+
+          let dark = 0;
+          for (const r of g) for (const v of r) dark += v;
+          p += Math.floor(Math.abs((dark * 100) / (size * size) - 50) / 5) * 10;
+          return p;
+        };
+
+        let best = null;
+        let bestScore = Infinity;
+        for (let mask = 0; mask < 8; mask++) {
+          const g = m.map((r, ri) =>
+            r.map((v, ci) => (fixed[ri][ci] ? v : v ^ (MASKS[mask](ri, ci) ? 1 : 0))),
+          );
+          const fmt = formatBits(mask);
+          // 形式情報は2か所に同じものを置く(g[行][列])
+          for (let i = 0; i < 15; i++) {
+            const b = (fmt >> i) & 1;
+            if (i < 6) g[i][8] = b;
+            else if (i === 6) g[7][8] = b;
+            else if (i === 7) g[8][8] = b;
+            else if (i === 8) g[8][7] = b;
+            else g[8][14 - i] = b;
+
+            if (i < 8) g[8][size - 1 - i] = b;
+            else g[size - 15 + i][8] = b;
+          }
+          const score = penalty(g);
+          if (score < bestScore) {
+            bestScore = score;
+            best = g;
+          }
+        }
+        return best;
+      }
+
+      function drawQR(el, text) {
+        const g = qrModules(text);
+        const n = g.length;
+        const q = 3; // 静寂領域
+        const box = n + q * 2;
+        let path = "";
+        for (let r = 0; r < n; r++) {
+          for (let c = 0; c < n; c++) {
+            if (g[r][c]) path += `M${c + q} ${r + q}h1v1h-1z`;
+          }
+        }
+        el.innerHTML =
+          `<svg viewBox="0 0 ${box} ${box}" shape-rendering="crispEdges" role="img" aria-label="${text}">` +
+          `<rect width="${box}" height="${box}" fill="#ffffff"/>` +
+          `<path d="${path}" fill="#17150f"/></svg>`;
+      }
+
+      const deck = document.getElementById("deck");
+      const slides = [...document.querySelectorAll(".slide")];
+      const dots = document.getElementById("dots");
+      const notes = document.getElementById("notes");
+      const clock = document.getElementById("clock");
+      const nowEl = document.getElementById("now");
+      const planEl = document.getElementById("plan");
+      const help = document.getElementById("help");
+
+      let at = 0;
+
+      slides.forEach(() => dots.insertAdjacentHTML("beforeend", '<i class="dot"></i>'));
+      const dotEls = [...dots.children];
+
+      /** "6:45" → 405 */
+      const seconds = (s) => {
+        const [m, sec] = s.split(":").map(Number);
+        return m * 60 + sec;
+      };
+
+      const clockText = (total) => {
+        const m = Math.floor(Math.abs(total) / 60);
+        const s = Math.abs(total) % 60;
+        return `${total < 0 ? "-" : ""}${m}:${String(s).padStart(2, "0")}`;
+      };
+
+      /*
+       * 会場の投影機の解像度も比率も事前にはわからない。
+       * 中身が入りきらないスライドだけ、収まるまで文字を小さくする。
+       */
+      function autofit() {
+        for (const s of slides) {
+          const wasActive = s.hasAttribute("data-active");
+          s.setAttribute("data-active", "");
+          s.style.animation = "none";
+
+          let fit = 1;
+          s.style.setProperty("--fit", fit);
+          const body = s.firstElementChild;
+          // 下端の進捗ラインに重ならないところまでを「入った」とみなす
+          const room = deck.clientHeight - deck.clientHeight * 0.055;
+          while (fit > 0.5 && body.getBoundingClientRect().height > room) {
+            fit -= 0.04;
+            s.style.setProperty("--fit", fit.toFixed(2));
+          }
+
+          s.style.animation = "";
+          if (!wasActive) s.removeAttribute("data-active");
+        }
+      }
+
+      function show(i) {
+        at = Math.max(0, Math.min(slides.length - 1, i));
+        slides.forEach((s, n) => s.toggleAttribute("data-active", n === at));
+        dotEls.forEach((d, n) => {
+          d.toggleAttribute("data-done", n < at);
+          d.toggleAttribute("data-now", n === at);
+        });
+        notes.textContent = slides[at].dataset.note || "";
+        planEl.textContent = slides[at].dataset.at;
+        location.hash = at + 1;
+        tick();
+      }
+
+      /* ---- タイマー ----
+       * 予定時刻と実測を並べて出す。10分の持ち時間で、いま何分遅れているかが
+       * 一目でわかることを優先している(スライド番号より重要)。
+       */
+      let startedAt = null;
+      let held = 0;
+
+      function elapsed() {
+        return held + (startedAt ? Math.floor((Date.now() - startedAt) / 1000) : 0);
+      }
+
+      function tick() {
+        const e = elapsed();
+        nowEl.textContent = clockText(e);
+        // 予定より30秒以上押していたら色を変える
+        clock.toggleAttribute("data-behind", e - seconds(slides[at].dataset.at) > 30);
+      }
+
+      setInterval(tick, 250); // 1秒間隔だと表示が最大1秒遅れて見えるため
+
+      function toggleTimer() {
+        clock.toggleAttribute("data-on", true);
+        if (startedAt) {
+          held = elapsed();
+          startedAt = null;
+        } else {
+          startedAt = Date.now();
+        }
+        tick();
+      }
+
+      document.addEventListener("keydown", (e) => {
+        const k = e.key;
+        if (k === "ArrowRight" || k === "ArrowDown" || k === " " || k === "PageDown") {
+          e.preventDefault();
+          show(at + 1);
+        } else if (k === "ArrowLeft" || k === "ArrowUp" || k === "PageUp") {
+          e.preventDefault();
+          show(at - 1);
+        } else if (k === "Home") {
+          show(0);
+        } else if (k === "End") {
+          show(slides.length - 1);
+        } else if (k === "t" || k === "T") {
+          toggleTimer();
+        } else if (k === "r" || k === "R") {
+          startedAt = null;
+          held = 0;
+          tick();
+        } else if (k === "n" || k === "N") {
+          notes.toggleAttribute("data-on");
+        } else if (k === "f" || k === "F") {
+          document.fullscreenElement
+            ? document.exitFullscreen()
+            : document.documentElement.requestFullscreen();
+        } else if (k === "?" || k === "/") {
+          help.toggleAttribute("data-on");
+        } else if (k === "Escape") {
+          help.removeAttribute("data-on");
+        }
+      });
+
+      // クリッカー対策:画面の右半分で進み、左半分で戻る
+      document.addEventListener("click", (e) => {
+        if (help.hasAttribute("data-on")) {
+          help.removeAttribute("data-on");
+          return;
+        }
+        show(e.clientX > innerWidth / 2 ? at + 1 : at - 1);
+      });
+
+      addEventListener("resize", () => {
+        autofit();
+        show(at);
+      });
+
+      document.getElementById("qr-url").textContent = QR_URL.replace(/^https?:\/\//, "");
+      drawQR(document.getElementById("qr"), QR_URL);
+
+      // 明朝体が読み込まれてから測る(字幅が変わって高さがずれるため)
+      const start = () => {
+        autofit();
+        show(Number(location.hash.slice(1)) - 1 || 0);
+      };
+      document.fonts ? document.fonts.ready.then(start) : start();
+    </script>
+  </body>
+</html>
