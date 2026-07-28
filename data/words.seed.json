@@ -1,10 +1,12 @@
 [
   {
-    "text": "道徳は便宜の異名である。「左側通行」と似たものである。",
+    "text": "道徳とは、都合のよさの別名だ。「左側を歩く」という決まりと似たようなものだ。",
     "author": "芥川龍之介",
     "source": "侏儒の言葉",
     "source_url": "https://www.aozora.gr.jp/cards/000879/files/158_15132.html",
-    "source_type": "classic"
+    "source_type": "classic",
+    "original": "道徳は便宜の異名である。「左側通行」と似たものである。",
+    "translation_note": "原文(文語)より現代語に"
   },
   {
     "text": "道徳は常に古着である。",
@@ -28,25 +30,31 @@
     "source_type": "classic"
   },
   {
-    "text": "自由は山巓の空気に似ている。どちらも弱い者には堪えることは出来ない。",
+    "text": "自由は山の頂の空気に似ている。どちらも、弱い者には耐えられない。",
     "author": "芥川龍之介",
     "source": "侏儒の言葉",
     "source_url": "https://www.aozora.gr.jp/cards/000879/files/158_15132.html",
-    "source_type": "classic"
+    "source_type": "classic",
+    "original": "自由は山巓の空気に似ている。どちらも弱い者には堪えることは出来ない。",
+    "translation_note": "原文(文語)より現代語に"
   },
   {
-    "text": "阿呆はいつも彼以外の人人を悉く阿呆と考えている。",
+    "text": "阿呆はいつも、自分以外の人間をひとり残らず阿呆だと思っている。",
     "author": "芥川龍之介",
     "source": "侏儒の言葉",
     "source_url": "https://www.aozora.gr.jp/cards/000879/files/158_15132.html",
-    "source_type": "classic"
+    "source_type": "classic",
+    "original": "阿呆はいつも彼以外の人人を悉く阿呆と考えている。",
+    "translation_note": "原文(文語)より現代語に"
   },
   {
-    "text": "他人を弁護するよりも自己を弁護するのは困難である。疑うものは弁護士を見よ。",
+    "text": "他人を弁護するより、自分を弁護するほうが難しい。疑うなら、弁護士を見てみるといい。",
     "author": "芥川龍之介",
     "source": "侏儒の言葉",
     "source_url": "https://www.aozora.gr.jp/cards/000879/files/158_15132.html",
-    "source_type": "classic"
+    "source_type": "classic",
+    "original": "他人を弁護するよりも自己を弁護するのは困難である。疑うものは弁護士を見よ。",
+    "translation_note": "原文(文語)より現代語に"
   },
   {
     "text": "幸福について考えないことは今日の人間の特徴である。",
@@ -70,11 +78,13 @@
     "source_type": "classic"
   },
   {
-    "text": "論理によって懐疑が出てくるのでなく、懐疑から論理が求められてくるのである。",
+    "text": "論理から疑いが生まれるのではない。疑いがあるから、論理が求められるのだ。",
     "author": "三木清",
     "source": "人生論ノート",
     "source_url": "https://www.aozora.gr.jp/cards/000218/files/1914_63525.html",
-    "source_type": "classic"
+    "source_type": "classic",
+    "original": "論理によって懐疑が出てくるのでなく、懐疑から論理が求められてくるのである。",
+    "translation_note": "原文(文語)より現代語に"
   },
   {
     "text": "世界がぜんたい幸福にならないうちは個人の幸福はあり得ない",
@@ -84,11 +94,13 @@
     "source_type": "classic"
   },
   {
-    "text": "われらは世界のまことの幸福を索ねよう　求道すでに道である",
+    "text": "わたしたちは、世界のほんとうの幸福を探しに行こう。探し求めること自体が、すでに道なのだ。",
     "author": "宮沢賢治",
     "source": "農民芸術概論綱要",
     "source_url": "https://www.aozora.gr.jp/cards/000081/files/2386_13825.html",
-    "source_type": "classic"
+    "source_type": "classic",
+    "original": "われらは世界のまことの幸福を索ねよう　求道すでに道である",
+    "translation_note": "原文(文語)より現代語に"
   },
   {
     "text": "科学者になるには自然を恋人としなければならない。",
