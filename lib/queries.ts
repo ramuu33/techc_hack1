@@ -2,6 +2,7 @@ import "server-only";
 
 import { CLASSIC_RATIO, TIMEZONE } from "./config";
 import { sql } from "./db";
+import { summarizeLineage } from "./lineage";
 
 export type Word = {
   id: string;
@@ -118,6 +119,7 @@ export async function findDeepestUndelivered(
         select d.id, parent.parent_word_id, d.depth + 1
           from depths d
           join words parent on parent.id = d.parent_word_id
+         where d.depth < 500  -- 上と同じ安全弁
     ),
     deepest as (
       select id, max(depth) as depth
@@ -163,9 +165,8 @@ export async function peekDeepestLineage(
   if (!word) return null;
 
   const withLineage = await getWordWithLineage(word.id);
-  return (
-    withLineage?.lineage.map((link) => link.author).join(" → ") ?? word.author
-  );
+  if (!withLineage) return word.author;
+  return summarizeLineage(withLineage.lineage.map((link) => link.author));
 }
 
 /* ------------------------------------------------------------------ *
@@ -193,6 +194,10 @@ export async function getWordWithLineage(
         select parent.*, chain.depth + 1
           from words parent
           join chain on parent.id = chain.parent_word_id
+         -- 安全弁。親は必ず自分より前に存在するので循環は起きないが、
+         -- 万一データが壊れたときに再帰が止まらなくなるのを防ぐ。
+         -- 連鎖の深さを制限する意図ではない(表示は word-card 側で畳む)。
+         where chain.depth < 500
     )
     select id, text, author, source_type, source, source_url,
            original, translation_note, author_user_id, parent_word_id, created_at

@@ -1,3 +1,4 @@
+import { summarizeLineage } from "@/lib/lineage";
 import type { Word, WordWithLineage } from "@/lib/queries";
 
 /** ユーザーの言葉には「さん」を付け、偉人はそのまま呼ぶ。 */
@@ -91,7 +92,7 @@ function Provenance({
 
       {lineage.length > 2 && (
         <p className="mt-4 text-[0.7rem] tracking-wider text-muted">
-          {lineage.map((link) => link.author).join(" → ")}
+          {summarizeLineage(lineage.map((link) => link.author))}
         </p>
       )}
     </div>
