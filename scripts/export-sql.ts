@@ -63,6 +63,11 @@ const HEADER = (what: string) =>
 --
 -- Supabase の SQL Editor にそのまま貼って実行できる。
 -- 先に db/schema.sql を実行しておくこと。
+--
+-- ⚠️ コピーは GitHub の Raw 表示から行うこと。
+--    通常のファイル表示は長いファイルを仮想スクロールするため、
+--    全選択しても末尾まで取れず、途中で切れた SQL を貼ることになる。
+--    (切れると文字列リテラルが途中で終わり、英文の一部がテーブル名として解釈される)
 `;
 
 function buildSeedSql() {
@@ -87,8 +92,14 @@ select ${values}
 where not exists (select 1 from words where text = ${lit(w.text)} and source_type = 'classic');`;
   });
 
+  // トランザクションで囲む。貼り付けが途中で切れたときに、
+  // 半分だけ入った状態にならず、まるごと失敗して巻き戻る。
   return `${HEADER(`偉人の言葉 ${words.length} 件(すべてパブリックドメイン)`)}
+begin;
+
 ${statements.join("\n\n")}
+
+commit;
 `;
 }
 
@@ -164,8 +175,13 @@ on conflict do nothing;`);
     }
   }
 
+  // seed.sql と同じ理由でトランザクションに入れる
   return `${HEADER("デモ用データ(4世代の系譜 + 配信履歴)")}
+begin;
+
 ${lines.join("\n")}
+
+commit;
 `;
 }
 

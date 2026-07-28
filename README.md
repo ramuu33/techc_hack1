@@ -309,6 +309,12 @@ npm run db:demo   # デモ用データ(4世代の系譜 + 配信履歴)
 | [`db/seed.sql`](db/seed.sql) | 偉人の言葉48件 |
 | [`db/demo.sql`](db/demo.sql) | デモ用データ(4世代の系譜 + 配信履歴) |
 
+> **コピーは GitHub の Raw 表示から行うこと。**
+> 通常のファイル表示は長いファイルを仮想スクロールするため、全選択しても末尾まで取れないことがある。
+> 途中で切れた SQL を貼ると、文字列リテラルが途中で終わり、英文の一部がテーブル名として解釈されて
+> `relation "an" does not exist` のようなエラーになる。
+> `seed.sql` と `demo.sql` はトランザクションで囲んであるので、切れた場合は何も入らずに巻き戻る。
+
 3つとも何度実行しても同じ結果になる。`db/seed.sql` と `db/demo.sql` は
 `data/words.seed.json` と `scripts/demo-data.ts` から `npm run db:export` で生成しているため、
 元データを変えたら再生成すること。

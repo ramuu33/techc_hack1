@@ -6,6 +6,13 @@
 --
 -- Supabase の SQL Editor にそのまま貼って実行できる。
 -- 先に db/schema.sql を実行しておくこと。
+--
+-- ⚠️ コピーは GitHub の Raw 表示から行うこと。
+--    通常のファイル表示は長いファイルを仮想スクロールするため、
+--    全選択しても末尾まで取れず、途中で切れた SQL を貼ることになる。
+--    (切れると文字列リテラルが途中で終わり、英文の一部がテーブル名として解釈される)
+
+begin;
 
 insert into words (text, author, source_type, source, source_url, original, translation_note)
 select '道徳とは、都合のよさの別名だ。「左側を歩く」という決まりと似たようなものだ。', '芥川龍之介', 'classic', '侏儒の言葉', 'https://www.aozora.gr.jp/cards/000879/files/158_15132.html', '道徳は便宜の異名である。「左側通行」と似たものである。', '原文(文語)より現代語に'
@@ -232,3 +239,5 @@ where not exists (select 1 from words where text = 'いつでも好きなとき�
 insert into words (text, author, source_type, source, source_url, original, translation_note)
 select '死は頭上にかかっている。まだ生きているうちに、まだできるうちに、善くあれ。', 'マルクス・アウレリウス', 'classic', '自省録', 'https://www.gutenberg.org/ebooks/2680', 'Death hangs over thee: whilst yet thou livest, whilst thou mayest, be good.', 'Meric Casaubon英訳(パブリックドメイン)より訳出'
 where not exists (select 1 from words where text = '死は頭上にかかっている。まだ生きているうちに、まだできるうちに、善くあれ。' and source_type = 'classic');
+
+commit;

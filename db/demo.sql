@@ -6,6 +6,13 @@
 --
 -- Supabase の SQL Editor にそのまま貼って実行できる。
 -- 先に db/schema.sql を実行しておくこと。
+--
+-- ⚠️ コピーは GitHub の Raw 表示から行うこと。
+--    通常のファイル表示は長いファイルを仮想スクロールするため、
+--    全選択しても末尾まで取れず、途中で切れた SQL を貼ることになる。
+--    (切れると文字列リテラルが途中で終わり、英文の一部がテーブル名として解釈される)
+
+begin;
 
 -- デモ用ユーザーを作り直す(words と deliveries は cascade で消える)
 delete from users where nickname in ('はるか', 'けんた', 'みお', 'さとし');
@@ -73,3 +80,5 @@ on conflict do nothing;
 insert into deliveries (user_id, word_id, delivered_at)
 values ('6ae80660-5790-5328-b45a-9981f4914254'::uuid, 'e348d3fa-859a-5397-ae19-6420277b5594'::uuid, now() - interval '0 days')
 on conflict do nothing;
+
+commit;
