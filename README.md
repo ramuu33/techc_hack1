@@ -272,6 +272,20 @@ npm run db:seed   # スキーマ適用 + 偉人の言葉66件(何度実行して
 npm run db:demo   # デモ用データ(4世代の系譜 + 配信履歴)
 ```
 
+**Node を使わずに投入する場合**(Supabase の SQL Editor に貼るだけ)
+
+同じ内容を素の SQL として書き出してある。上から順に実行する。
+
+| ファイル | 内容 |
+|---|---|
+| [`db/schema.sql`](db/schema.sql) | テーブルとインデックス |
+| [`db/seed.sql`](db/seed.sql) | 偉人の言葉66件 |
+| [`db/demo.sql`](db/demo.sql) | デモ用データ(4世代の系譜 + 配信履歴) |
+
+3つとも何度実行しても同じ結果になる。`db/seed.sql` と `db/demo.sql` は
+`data/words.seed.json` と `scripts/demo-data.ts` から `npm run db:export` で生成しているため、
+元データを変えたら再生成すること。
+
 ### 5. 起動する
 
 ```bash
@@ -288,9 +302,24 @@ http://localhost:3000
 | `npm run build` | 本番ビルド |
 | `npm run db:seed` | スキーマ適用 + 偉人の言葉を投入 |
 | `npm run db:demo` | デモ用データを投入(毎回作り直す) |
+| `npm run db:export` | `db/seed.sql` と `db/demo.sql` を生成し直す |
 | `npm run db:reset` | 全テーブルを削除 |
 
 ---
+
+## Vercel へのデプロイ
+
+1. Vercel でこのリポジトリをインポートする(ビルド設定は既定のままでよい)
+2. Environment Variables に `DATABASE_URL` / `CLASSIC_RATIO` / `ALLOW_REROLL` / `TIMEZONE` を設定する
+3. DB にまだ何も入れていなければ、上の「4. スキーマと言葉を投入する」を接続先の DB に対して実行する
+
+> **発表に使うインスタンスでは `ALLOW_REROLL=true` にする。**
+> `false` のままだと1日1回しか言葉を受け取れず、`/demo` も 404 になるため、
+> リハーサルも当日の実演もできなくなる。1日1回の制限を本来の形で見せたい場合だけ `false` にする。
+
+`DATABASE_URL` は Vercel から到達できる必要がある。Supabase の場合は Session pooler(5432番)か
+Transaction pooler(6543番)の接続文字列を使う。6543番のときは prepared statement が使えないため、
+`lib/db.ts` がポート番号を見て自動で無効化する。
 
 ## デモの流れ
 
