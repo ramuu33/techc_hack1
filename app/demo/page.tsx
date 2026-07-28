@@ -4,8 +4,13 @@ import { ALLOW_REROLL } from "@/lib/config";
 import { sql } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 
-import { DeliverButton } from "./deliver-button";
-import { becomeUser, resetSession } from "./actions";
+import { ActionButton } from "./action-button";
+import {
+  becomeUser,
+  deliverLatestToEveryone,
+  queueDeepestLineage,
+  resetSession,
+} from "./actions";
 
 export const metadata = { title: "デモ操作 — ことづて" };
 
@@ -68,13 +73,33 @@ export default async function DemoPage() {
 
       <section>
         <h3 className="text-xs tracking-widest text-faint">
+          来歴つきの言葉を確実に出す
+        </h3>
+        <p className="mt-3 text-xs leading-relaxed text-muted">
+          通常の抽選は 偉人7 : ユーザー3
+          なので、来歴つきの言葉が一発で出るとは限りません。次の受け取りだけを
+          系譜のいちばん深い言葉に差し替えます。ホームの「受け取る」から普段どおり開けます。
+        </p>
+        <ActionButton
+          label="次に受け取る言葉を、系譜の深いものにする"
+          pendingLabel="予約しています…"
+          action={queueDeepestLineage}
+        />
+      </section>
+
+      <section>
+        <h3 className="text-xs tracking-widest text-faint">
           循環を、その場で1周させる
         </h3>
         <p className="mt-3 text-xs leading-relaxed text-muted">
           通常は相手がアプリを開いた時に抽選で届きます。発表の場でそれを待てないため、
           同じ配信処理をその場で起こします。作られるデータは通常の配信と同じです。
         </p>
-        <DeliverButton />
+        <ActionButton
+          label="自分の最新の言葉を、他の全員に届ける"
+          pendingLabel="届けています…"
+          action={deliverLatestToEveryone}
+        />
       </section>
 
       <section>

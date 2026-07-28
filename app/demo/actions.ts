@@ -3,8 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
-import { ALLOW_REROLL, SESSION_COOKIE } from "@/lib/config";
+import {
+  ALLOW_REROLL,
+  DEEP_LINEAGE_COOKIE,
+  SESSION_COOKIE,
+} from "@/lib/config";
 import { sql } from "@/lib/db";
+import { peekDeepestLineage } from "@/lib/queries";
 import { getCurrentUser } from "@/lib/session";
 
 /** デモ操作は ALLOW_REROLL=true のときしか動かない。本番デプロイでは常に閉じている。 */
@@ -45,6 +50,39 @@ export async function resetSession() {
   store.delete(SESSION_COOKIE);
 
   revalidatePath("/", "layout");
+}
+
+/**
+ * 次にホームで受け取る言葉を、系譜がいちばん深いものにする。
+ *
+ * 通常の抽選は 偉人7 : ユーザー3 なので、来歴つきの言葉が一発で出るとは限らない。
+ * ここで先に受け取ってしまうと「受け取る」ボタンから浮かび上がる演出が飛ぶため、
+ * 予約だけしてホームに任せる。記録されるデータは通常の配信と同じ。
+ */
+export async function queueDeepestLineage(): Promise<{ message: string }> {
+  assertDemoMode();
+
+  const user = await getCurrentUser();
+  if (!user) return { message: "先に名前を入れてはじめてください。" };
+
+  const preview = await peekDeepestLineage(user.id);
+  if (!preview) {
+    return { message: "まだ受け取っていない、来歴つきの言葉がありません。" };
+  }
+
+  const store = await cookies();
+  store.set(DEEP_LINEAGE_COOKIE, "1", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+  });
+
+  revalidatePath("/");
+
+  return {
+    message: `予約しました(${preview})。ホームで「受け取る」を押すとこれが届きます。`,
+  };
 }
 
 /**

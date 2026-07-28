@@ -4,7 +4,11 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { ALLOW_REROLL, SESSION_COOKIE } from "@/lib/config";
+import {
+  ALLOW_REROLL,
+  DEEP_LINEAGE_COOKIE,
+  SESSION_COOKIE,
+} from "@/lib/config";
 import {
   MAX_NICKNAME_LENGTH,
   MAX_WORD_LENGTH,
@@ -12,6 +16,7 @@ import {
 } from "@/lib/constants";
 import { sql } from "@/lib/db";
 import {
+  drawDeepestLineage,
   drawWord,
   getTodaysDelivery,
   getWordWithLineage,
@@ -66,7 +71,16 @@ export async function receiveTodaysWord(): Promise<ReceiveState> {
     }
   }
 
-  const drawn = await drawWord(user.id);
+  // デモで /demo から予約されていれば、系譜のいちばん深い言葉を引く。
+  // 受け取りの演出はそのまま通したいので、抽選の中身だけを差し替える。
+  const store = await cookies();
+  const reserved = ALLOW_REROLL && store.get(DEEP_LINEAGE_COOKIE)?.value === "1";
+  if (reserved) store.delete(DEEP_LINEAGE_COOKIE);
+
+  const drawn = reserved
+    ? ((await drawDeepestLineage(user.id)) ?? (await drawWord(user.id)))
+    : await drawWord(user.id);
+
   if (!drawn) {
     // プールは在庫ではないので、これは「この人がまだ見ていない言葉が尽きた」という意味。
     // 誰かが書けばまた増える。

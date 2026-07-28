@@ -13,6 +13,12 @@ export const TIMEZONE = process.env.TIMEZONE || "Asia/Tokyo";
 
 export const SESSION_COOKIE = "kotozute_uid";
 
+/**
+ * 次の受け取りを「系譜のいちばん深い言葉」にする予約(デモ用)。
+ * ALLOW_REROLL のときしか立たない。
+ */
+export const DEEP_LINEAGE_COOKIE = "kotozute_demo_deep";
+
 function clampRatio(raw: string | undefined, fallback: number) {
   const parsed = Number(raw);
   if (!Number.isFinite(parsed) || parsed < 0 || parsed > 1) return fallback;

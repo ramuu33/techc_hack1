@@ -100,6 +100,74 @@ async function pickUndelivered(
   return rows[0] ?? null;
 }
 
+/**
+ * まだ届いていない言葉のうち、系譜がいちばん深いものを返す(配信は記録しない)。
+ *
+ * 通常の抽選では7割が偉人の言葉(系譜なし)になるため、
+ * 「循環が見える瞬間」が一発で出るとは限らない。発表でそこを外さないための経路。
+ */
+export async function findDeepestUndelivered(
+  userId: string,
+): Promise<Word | null> {
+  const rows = await sql<Word[]>`
+    with recursive depths as (
+        select w.id, w.parent_word_id, 0 as depth
+          from words w
+         where w.source_type = 'user'
+      union all
+        select d.id, parent.parent_word_id, d.depth + 1
+          from depths d
+          join words parent on parent.id = d.parent_word_id
+    ),
+    deepest as (
+      select id, max(depth) as depth
+        from depths
+       group by id
+    )
+    select w.*
+      from deepest
+      join words w on w.id = deepest.id
+     where (w.author_user_id is null or w.author_user_id <> ${userId}::uuid)
+       and not exists (
+             select 1
+               from deliveries d
+              where d.user_id = ${userId}::uuid
+                and d.word_id = w.id
+           )
+     order by deepest.depth desc, w.created_at desc
+     limit 1
+  `;
+
+  return rows[0] ?? null;
+}
+
+/** 系譜の深い言葉を実際に引いて、配信履歴に記録する。通常の配信と同じ1行が入る。 */
+export async function drawDeepestLineage(userId: string): Promise<Word | null> {
+  const word = await findDeepestUndelivered(userId);
+  if (!word) return null;
+
+  await sql`
+    insert into deliveries (user_id, word_id)
+    values (${userId}::uuid, ${word.id}::uuid)
+    on conflict (user_id, word_id) do nothing
+  `;
+
+  return word;
+}
+
+/** 予約時に「何が届くか」を見せるための下読み。配信は記録しない。 */
+export async function peekDeepestLineage(
+  userId: string,
+): Promise<string | null> {
+  const word = await findDeepestUndelivered(userId);
+  if (!word) return null;
+
+  const withLineage = await getWordWithLineage(word.id);
+  return (
+    withLineage?.lineage.map((link) => link.author).join(" → ") ?? word.author
+  );
+}
+
 /* ------------------------------------------------------------------ *
  * ①' 来歴
  * ------------------------------------------------------------------ */
