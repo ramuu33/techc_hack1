@@ -12,6 +12,12 @@ export const metadata: Metadata = {
     "偉人の言葉を種火に、心が動いた人が自分の言葉を書く。その言葉は明日、別の誰かに届く。",
 };
 
+/**
+ * 全画面の外枠。ヘッダー(自分が誰か)と、下端のナビだけを置く。
+ *
+ * 幅を max-w-xl に絞っているのは、1日1つの言葉をゆっくり読む画面だから。
+ * 横に広いと視線の移動距離が長くなり、流し読みの姿勢になる。
+ */
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {

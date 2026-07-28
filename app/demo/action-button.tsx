@@ -2,7 +2,12 @@
 
 import { useState, useTransition } from "react";
 
-/** デモ操作のボタン。結果の一言をその場に出す。 */
+/**
+ * デモ操作のボタン。押した結果をその場に文で出す。
+ *
+ * 発表中に押すものなので、成否が分からないまま次に進むのがいちばん困る。
+ * 「何人に届けた」までボタンの下に出して、画面を切り替えずに確認できるようにしている。
+ */
 export function ActionButton({
   label,
   pendingLabel,

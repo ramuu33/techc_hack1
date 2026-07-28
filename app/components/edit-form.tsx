@@ -6,6 +6,11 @@ import { MAX_WORD_LENGTH, MIN_WORD_LENGTH } from "@/lib/constants";
 
 import { editWord, type ActionState } from "../actions";
 
+/**
+ * 直すための鉛筆。文字で「直す」と書くと、軌跡を開いたときに
+ * その語が縦に並んで目に入り、直すことを勧められている画面になる。
+ * アイコンにすると、必要な人だけが見つける濃さになる。
+ */
 function PencilIcon() {
   return (
     <svg
@@ -25,6 +30,12 @@ function PencilIcon() {
   );
 }
 
+/**
+ * 書いた日。
+ *
+ * jsonb を通ると timestamptz が文字列で返るため、Date ではなく string を受ける。
+ * 型に string と書いてあるのはそのため(取り違えるとここで実行時に落ちる)。
+ */
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("ja-JP", {
     year: "numeric",

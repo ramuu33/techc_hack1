@@ -17,6 +17,17 @@ export function WriteForm({
   wordId,
   defaultOpen = true,
   openLabel = "書く",
+  /**
+   * 何を書く欄なのかを決める、いちばん効いている一行。
+   *
+   * 「感想」を聞くと、届いた言葉の要約や同意が返ってくる。それだと内容が
+   * そのまま次に渡り、リツイートと同じものになる。
+   * 「自分の何を思い出したか」を聞くと、答えは必ず書き手の側の出来事になり、
+   * 内容は元の言葉から離れていく。
+   *
+   * このプロダクトが「転送が原理的に不可能」と言えるのは、機能を塞いだから
+   * ではなく、この問いの立て方で内容が必ず変質するため。
+   */
   label = "読んで、自分の何を思い出しましたか",
   note,
 }: {
@@ -36,6 +47,8 @@ export function WriteForm({
   );
   const [open, setOpen] = useState(defaultOpen);
 
+  // 書き終えたらフォームごと消して、託したことだけを残す。
+  // 入力欄が残っていると「まだ何かできる」画面になり、渡した実感が出ない。
   if (state.ok) {
     return (
       <p className="animate-fade-up mt-10 text-center text-sm leading-loose text-accent">
@@ -85,6 +98,11 @@ export function WriteForm({
         minLength={MIN_WORD_LENGTH}
         maxLength={MAX_WORD_LENGTH}
         required
+        /*
+          例文は、答えの形を見せるために置いている。
+          具体的な場面 → そこで自分が何をしていたかの発見、という並びにしてある。
+          名言めいた一文を例に出すと、それを真似た文が集まってしまう。
+        */
         placeholder="例)会議で黙っていたことを思い出した。あれは賛成したのと同じだったかもしれない。"
         className="mt-1 w-full resize-none border-b border-line bg-transparent py-3 leading-loose outline-none placeholder:text-faint focus:border-accent"
       />

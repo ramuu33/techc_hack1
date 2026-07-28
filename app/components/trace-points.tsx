@@ -1,3 +1,14 @@
+/**
+ * 軌跡の表示。自分用(MyTrace)と他人用(PublicTrace)の2つがある。
+ *
+ * 違いは3つだけ。
+ *   自分用   … 届いたものが全部並ぶ / 書ける / 直せる / 生まれた言葉が見える
+ *   他人用   … 書かれたものだけが並ぶ / 反応する手段は無い
+ *
+ * 他人の軌跡に、いいねもコメントも返信も置いていない。
+ * 読んで何か動いたら、自分の場所で自分の言葉を書く。それが唯一の反応経路。
+ */
+
 import type { TraceEntry, TracePoint, Word } from "@/lib/queries";
 
 import { EditableWord } from "./edit-form";
@@ -53,7 +64,12 @@ export function MyTrace({ entries }: { entries: TraceEntry[] }) {
   );
 }
 
-/** ⑤ 他の人の軌跡。書かれたものだけが古い順に並ぶ。 */
+/**
+ * ⑤ 他の人の軌跡。書かれたものだけが古い順に並ぶ。
+ *
+ * 届いたのに書かなかった日は出さない。自分の軌跡では「まだ」として意味を持つが、
+ * 他人にとっては、その人が書かなかった日を数えて見せることになる。
+ */
 export function PublicTrace({ points }: { points: TracePoint[] }) {
   return (
     <ol className="relative ml-1 space-y-14 border-l border-line pl-6">
@@ -90,6 +106,12 @@ function PointMarker({ filled }: { filled: boolean }) {
   );
 }
 
+/**
+ * 見出し。通し番号と日付だけ。
+ *
+ * 「書いた/書いていない」の状態は左の点が持っているので、
+ * ここで文字にすると同じことを二度言うことになる。
+ */
 function Header({
   index,
   date,
@@ -142,6 +164,7 @@ function BornFrom({ words }: { words: Word[] }) {
   );
 }
 
+/** その点のきっかけになった言葉。引用の形にして、自分の言葉と混ざらないようにする。 */
 function Origin({ word }: { word: Word }) {
   return (
     <blockquote className="mt-4 border-l border-line pl-4">
@@ -151,6 +174,10 @@ function Origin({ word }: { word: Word }) {
   );
 }
 
+/**
+ * 日付。1日の区切りは Asia/Tokyo に固定している。
+ * サーバーがどこで動いていても、ユーザーにとっての「今日」がずれないように。
+ */
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat("ja-JP", {
     year: "numeric",

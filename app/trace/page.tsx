@@ -7,6 +7,16 @@ import { MyTrace } from "../components/trace-points";
 
 export const metadata = { title: "わたしの軌跡 — ことづて" };
 
+/**
+ * わたしの軌跡。届いた言葉と、それに対して自分が書いた言葉が並ぶ。
+ *
+ * 循環の結果として溜まるものなので、ホームではなく2番目の画面に置いている。
+ * ここを入口にすると「記録を溜めるアプリ」になり、渡ることより溜まることが
+ * 目的に見えてしまう。
+ *
+ * 表示は届いた順(古い順)。書いていない日も点として残す。埋まっていない
+ * ことは失敗ではなく「まだ」なので、件数バッジも催促も出さない。
+ */
 export default async function TracePage() {
   const user = await getCurrentUser();
 
@@ -20,6 +30,7 @@ export default async function TracePage() {
     );
   }
 
+  // 軌跡そのものと、到達件数。互いに独立なので同時に取る。
   const [entries, stats] = await Promise.all([
     getTrace(user.id),
     getReachStats(user.id),
@@ -43,6 +54,10 @@ export default async function TracePage() {
         <h2 className="text-sm tracking-[0.3em] text-muted">
           {user.nickname}の軌跡
         </h2>
+        {/*
+          「◯人が受け取りました」は0のときは出さない。
+          0と書くと、届いていないことを失敗として突きつけることになる。
+        */}
         <p className="mt-3 text-xs text-faint">
           {stats.points}つの点
           {stats.total > 0 && ` ・ のべ ${stats.total} 人が受け取りました`}
@@ -57,6 +72,7 @@ export default async function TracePage() {
   );
 }
 
+/** 何も無いときの置き場。責めない文面にして、必ず次の一歩を添える。 */
 function Empty({ children }: { children: React.ReactNode }) {
   return (
     <p className="pt-20 text-center text-sm leading-loose text-muted">
