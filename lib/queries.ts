@@ -230,12 +230,24 @@ export async function hasWrittenFor(
  * ③ 誰かに届いたことを見せる
  * ------------------------------------------------------------------ */
 
-export type ReachStats = { today: number; total: number };
+export type ReachStats = {
+  /** 自分が書いた言葉の数。軌跡を作る点の数。 */
+  points: number;
+  /** 今日それが届いた人数 */
+  today: number;
+  /** これまでに届いた人数 */
+  total: number;
+};
 
-/** 自分が書いた言葉が、何人に届いたか。このプロダクトの報酬にあたる数字。 */
+/**
+ * 自分が書いた言葉が、何人に届いたか。このプロダクトの報酬にあたる数字。
+ * 点の数も一緒に返す。まだ誰にも届いていなくても、自分の痕跡は画面に出したい。
+ */
 export async function getReachStats(userId: string): Promise<ReachStats> {
-  const rows = await sql<{ today: number; total: number }[]>`
+  const rows = await sql<ReachStats[]>`
     select
+      (select count(*) from words where author_user_id = ${userId}::uuid)::int
+        as points,
       count(distinct d.user_id) filter (
         where (d.delivered_at at time zone ${TIMEZONE})::date
             = (now()          at time zone ${TIMEZONE})::date
@@ -245,51 +257,87 @@ export async function getReachStats(userId: string): Promise<ReachStats> {
       join deliveries d on d.word_id = w.id
      where w.author_user_id = ${userId}::uuid
   `;
-  return rows[0] ?? { today: 0, total: 0 };
+  return rows[0] ?? { points: 0, today: 0, total: 0 };
 }
 
 /* ------------------------------------------------------------------ *
- * ④⑤ 本
+ * ④⑤ 軌跡
  * ------------------------------------------------------------------ */
 
-/** 人生本の1ページ:きっかけになった言葉と、それに対して自分が書いた言葉。 */
-export type BookPage = {
+/**
+ * 軌跡の1点:きっかけになった言葉と、それに対して自分が書いた言葉。
+ *
+ * 点は独立したテーブルを持たない。「自分が書いた言葉」と
+ * 「その言葉を生んだ言葉(parent_word_id)」の組がそのまま1点になる。
+ */
+export type TracePoint = {
   written: Word;
   origin: Word | null;
 };
 
 /**
- * ある人の本。
+ * 他の人の軌跡。書かれた言葉だけが並ぶ。
  *
- * ページは独立したテーブルを持たない。「自分が書いた言葉」と
- * 「その言葉を生んだ言葉(parent_word_id)」の組がそのまま1ページになる。
+ * 古い順に返す。新しい順に並べるとフィードとして読めてしまい、
+ * その人が変わっていく過程が見えなくなるため。
  */
-export async function getBook(userId: string): Promise<BookPage[]> {
+export async function getPublicTrace(userId: string): Promise<TracePoint[]> {
   const rows = await sql<(Word & { origin: Word | null })[]>`
     select w.*,
            case when p.id is null then null else to_jsonb(p.*) end as origin
       from words w
       left join words p on p.id = w.parent_word_id
      where w.author_user_id = ${userId}::uuid
-     order by w.created_at desc
+     order by w.created_at asc
   `;
 
   return rows.map(({ origin, ...written }) => ({ written, origin }));
 }
 
-export type BookSummary = {
+/** 自分の軌跡の1要素。届いただけでまだ書いていないものは written が null。 */
+export type TraceEntry = {
+  received: Word;
+  written: Word | null;
+  delivered_at: Date;
+};
+
+/**
+ * 自分の軌跡。**届いた言葉すべて**が古い順に並ぶ。
+ *
+ * まだ書いていないものも含めるのは、届いたその場で言葉にできるとは限らないから。
+ * 言葉が届いた瞬間と、前提が動く瞬間は同じとは限らない。
+ * ただし件数バッジや催促は出さない。埋まっていないことは失敗ではなく「まだ」である。
+ */
+export async function getTrace(userId: string): Promise<TraceEntry[]> {
+  return sql<TraceEntry[]>`
+    select d.delivered_at,
+           to_jsonb(r.*) as received,
+           case when w.id is null then null else to_jsonb(w.*) end as written
+      from deliveries d
+      join words r on r.id = d.word_id
+      left join words w
+        on w.parent_word_id = d.word_id
+       and w.author_user_id = d.user_id
+     where d.user_id = ${userId}::uuid
+     order by d.delivered_at asc, w.created_at asc nulls first
+  `;
+}
+
+export type TraceSummary = {
   user_id: string;
   nickname: string;
-  page_count: number;
+  point_count: number;
   latest_text: string;
 };
 
-/** 他の人の本の一覧。1ページ以上書いている人だけが並ぶ。 */
-export async function listBooks(excludeUserId?: string): Promise<BookSummary[]> {
-  return sql<BookSummary[]>`
+/** 他の人の軌跡の一覧。1点以上書いている人だけが並ぶ。 */
+export async function listTraces(
+  excludeUserId?: string,
+): Promise<TraceSummary[]> {
+  return sql<TraceSummary[]>`
     select u.id            as user_id,
            u.nickname      as nickname,
-           count(w.id)::int as page_count,
+           count(w.id)::int as point_count,
            (select w2.text
               from words w2
              where w2.author_user_id = u.id

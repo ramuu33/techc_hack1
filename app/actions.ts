@@ -145,7 +145,7 @@ export async function writeWord(
   `;
 
   revalidatePath("/");
-  revalidatePath("/book");
+  revalidatePath("/trace");
   revalidatePath("/others");
   return { ok: true };
 }
