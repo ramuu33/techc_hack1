@@ -34,6 +34,41 @@
 
 ---
 
+## 前日までにやること
+
+30分前では間に合わないもの。
+
+| | やること | やらないとどうなるか |
+|---|---|---|
+| 1 | 本番DBで [`db/demo.sql`](../db/demo.sql) を流す | デモの12人が入らない。旧名(はるか・けんた…)が残っていると、スライドと画面が食い違う |
+| 2 | 自分のテスト用の軌跡を消す | 他の人の軌跡に、動作確認の跡が並ぶ |
+| 3 | 本番URLで通しで操作し、その画面を録画する | ネットワークが落ちたときの代わりが無い |
+| 4 | 10分の通しリハーサルを1回やる | 台本を全部読むと1分半ほど溢れる。どこを飛ばすか体で覚えておく |
+
+`db/demo.sql` は GitHub の Raw 表示からコピーして、Supabase の SQL Editor に貼る。
+デモ用の名前だけを消して作り直すので、実ユーザーには影響しない。
+トランザクションで囲んであるため、コピーが途中で切れた場合は何も入らずに巻き戻る。
+
+自分のテストデータを消すときは、先に何があるかを見る。
+
+```sql
+select u.nickname,
+       (select count(*) from words w where w.author_user_id = u.id) as 書いた数,
+       (select count(*) from words c
+          join words w on w.id = c.parent_word_id
+         where w.author_user_id = u.id) as そこから生まれた数
+  from users u
+ order by u.nickname;
+```
+
+「そこから生まれた数」が0なら消して安全。0でなければ、消すと系譜が切れる。
+
+```sql
+delete from users where nickname = 'ここに名前';
+```
+
+---
+
 ## 発表の30分前にやること
 
 | | 確認 | 落ちるとどうなるか |
