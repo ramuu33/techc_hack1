@@ -44,8 +44,8 @@ export default async function TracePage() {
           {user.nickname}の軌跡
         </h2>
         <p className="mt-3 text-xs text-faint">
-          {stats.points} の点
-          {stats.total > 0 && ` ・ のべ ${stats.total} 人に届きました`}
+          {stats.points}つの点
+          {stats.total > 0 && ` ・ のべ ${stats.total} 人が受け取りました`}
         </p>
         <p className="mt-4 text-xs leading-relaxed text-faint">
           点が増えるほど、軌跡が見えてくる

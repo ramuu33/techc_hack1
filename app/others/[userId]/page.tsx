@@ -23,7 +23,7 @@ export default async function OtherTracePage({
         <h2 className="text-sm tracking-[0.3em] text-muted">
           {owner.nickname}の軌跡
         </h2>
-        <p className="mt-3 text-xs text-faint">{points.length} の点</p>
+        <p className="mt-3 text-xs text-faint">{points.length}つの点</p>
         <p className="mt-4 text-xs leading-relaxed text-faint">
           古いものから並んでいます
         </p>

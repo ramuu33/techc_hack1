@@ -37,7 +37,7 @@ export default async function OthersPage() {
               <div className="flex items-baseline justify-between">
                 <span className="text-sm">{trace.nickname}の軌跡</span>
                 <span className="text-xs text-faint">
-                  {trace.point_count} の点
+                  {trace.point_count}つの点
                 </span>
               </div>
 
