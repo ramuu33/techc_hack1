@@ -6,23 +6,24 @@
     <title>ことづて — 発表スライド</title>
     <style>
       /*
-       * 発表スライド。docs/demo-script.md の10分構成にそのまま対応している。
+       * 発表スライド。docs/demo-script.md の10分構成に対応している。
        *
        * 外部リソースを一切読まない一枚のHTMLにしてある。会場のネットワークが
        * 落ちてもスライドだけは必ず出るようにするため。
        *
-       * 配色とフォントは app/globals.css と同じ。プロダクトと地続きに見えることが、
-       * 完成度の点に効く。
+       * 白地・サンセリフ。読み取りやすさを最優先にして、装飾は罫線と1色だけに
+       * 絞っている(プロダクト本体の夜の見た目とは別物として作っている)。
        */
       :root {
-        --background: #14120f;
-        --surface: #1c1916;
-        --foreground: #ece5da;
-        --muted: #a2988a;
-        --faint: #8f8574;
-        --line: #2e2822;
-        --accent: #c8a86a;
-        color-scheme: dark;
+        --bg: #ffffff;
+        --ink: #17150f;
+        --sub: #55524b;
+        --faint: #8b8781;
+        --line: #e3e0d9;
+        --tint: #f8f6f2;
+        --accent: #9a6b1f;
+        --accent-soft: #f2ead9;
+        color-scheme: light;
       }
 
       * {
@@ -38,11 +39,11 @@
       }
 
       body {
-        background: var(--background);
-        color: var(--foreground);
+        background: var(--bg);
+        color: var(--ink);
         font-family:
-          "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP",
-          "Source Han Serif JP", serif;
+          "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic Medium",
+          "Yu Gothic", "Noto Sans JP", "Helvetica Neue", Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
         cursor: default;
       }
@@ -58,7 +59,7 @@
         position: relative;
         height: 100%;
         font-size: calc(var(--s) * 2.1);
-        line-height: 1.85;
+        line-height: 1.8;
       }
 
       /*
@@ -80,13 +81,13 @@
 
       .slide[data-active] {
         display: flex;
-        animation: rise 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+        animation: rise 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
       }
 
       @keyframes rise {
         from {
           opacity: 0;
-          transform: translateY(calc(var(--s) * 1.4));
+          transform: translateY(calc(var(--s) * 1.2));
         }
       }
 
@@ -99,72 +100,85 @@
       /* ---- 文字 ---- */
 
       h1 {
-        font-size: calc(var(--s) * 9);
-        font-weight: 400;
-        letter-spacing: 0.42em;
+        font-size: calc(var(--s) * 8);
+        font-weight: 600;
+        letter-spacing: 0.38em;
         line-height: 1.3;
       }
 
       h2 {
-        font-size: calc(var(--s) * 4.4);
-        font-weight: 400;
+        font-size: calc(var(--s) * 4.6);
+        font-weight: 600;
         line-height: 1.5;
-        letter-spacing: 0.04em;
+        letter-spacing: 0.02em;
       }
 
       .lead {
-        font-size: calc(var(--s) * 3.2);
-        line-height: 1.9;
-        color: var(--foreground);
+        font-size: calc(var(--s) * 3);
+        line-height: 1.85;
+      }
+
+      .big {
+        font-size: calc(var(--s) * 4.8);
+        font-weight: 600;
+        line-height: 1.55;
+      }
+
+      .huge {
+        font-size: calc(var(--s) * 6.4);
+        font-weight: 600;
+        line-height: 1.45;
+        letter-spacing: 0.02em;
       }
 
       .sub {
-        color: var(--muted);
+        color: var(--sub);
       }
 
       .faint {
         color: var(--faint);
       }
 
-      .accent {
-        color: var(--accent);
-      }
-
       em {
         font-style: normal;
         color: var(--accent);
+        font-weight: 600;
+      }
+
+      /* 覚えて帰ってほしい一言に引く下線 */
+      .mark {
+        background: linear-gradient(transparent 62%, var(--accent-soft) 62%);
       }
 
       .eyebrow {
+        display: flex;
+        align-items: center;
+        gap: calc(var(--s) * 1.6);
         font-size: calc(var(--s) * 1.7);
-        letter-spacing: 0.5em;
+        letter-spacing: 0.34em;
         color: var(--faint);
-        margin-bottom: calc(var(--s) * 4);
+        margin-bottom: calc(var(--s) * 3.4);
+      }
+
+      .eyebrow::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--line);
       }
 
       .stack > * + * {
-        margin-top: calc(var(--s) * 3.2);
+        margin-top: calc(var(--s) * 3);
       }
 
       .tight > * + * {
-        margin-top: calc(var(--s) * 1.6);
+        margin-top: calc(var(--s) * 1.2);
       }
 
       .quote {
-        border-left: 1px solid var(--line);
-        padding-left: calc(var(--s) * 3);
-        color: var(--muted);
-      }
-
-      .big {
-        font-size: calc(var(--s) * 5.6);
-        line-height: 1.55;
-      }
-
-      .huge {
-        font-size: calc(var(--s) * 7);
-        line-height: 1.45;
-        letter-spacing: 0.06em;
+        border-left: calc(var(--s) * 0.35) solid var(--accent-soft);
+        padding-left: calc(var(--s) * 2.6);
+        color: var(--sub);
       }
 
       /* ---- 表 ---- */
@@ -178,25 +192,62 @@
       th,
       td {
         text-align: left;
-        padding: calc(var(--s) * 1.5) calc(var(--s) * 2);
+        padding: calc(var(--s) * 1.6) calc(var(--s) * 2);
         border-bottom: 1px solid var(--line);
         vertical-align: top;
+        color: var(--sub);
       }
 
-      th {
+      thead th {
         font-weight: 400;
         color: var(--faint);
         font-size: calc(var(--s) * 1.8);
         letter-spacing: 0.12em;
+        padding-bottom: calc(var(--s) * 1);
       }
 
       td.who {
-        color: var(--accent);
         white-space: nowrap;
+        color: var(--ink);
       }
 
+      /* 自分の行だけ、薄く塗って濃い字にする */
       tr.mine td {
-        color: var(--foreground);
+        color: var(--ink);
+        background: var(--tint);
+        font-weight: 600;
+        border-bottom-color: var(--accent-soft);
+      }
+
+      tr.mine td.who {
+        color: var(--accent);
+      }
+
+      /* ---- 4分割(誰の/課題/解決/効果) ---- */
+
+      .grid4 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: calc(var(--s) * 3) calc(var(--s) * 5);
+      }
+
+      .cell {
+        border-top: 1px solid var(--line);
+        padding-top: calc(var(--s) * 1.8);
+      }
+
+      .cell h3 {
+        font-size: calc(var(--s) * 1.8);
+        font-weight: 400;
+        letter-spacing: 0.28em;
+        color: var(--faint);
+        margin-bottom: calc(var(--s) * 1.2);
+      }
+
+      .cell p {
+        font-size: calc(var(--s) * 2.4);
+        line-height: 1.75;
+        color: var(--ink);
       }
 
       /* ---- 点と線(プロダクトの視覚言語) ---- */
@@ -204,19 +255,18 @@
       .chain {
         display: flex;
         align-items: flex-start;
-        gap: 0;
       }
 
       .chain .node {
         flex: 1;
         position: relative;
-        padding-top: calc(var(--s) * 4.5);
+        padding-top: calc(var(--s) * 4.4);
       }
 
       .chain .node::before {
         content: "";
         position: absolute;
-        top: calc(var(--s) * 1.6);
+        top: calc(var(--s) * 1.5);
         left: 0;
         right: 0;
         height: 1px;
@@ -234,7 +284,7 @@
       .chain .node::after {
         content: "";
         position: absolute;
-        top: calc(var(--s) * 0.5);
+        top: calc(var(--s) * 0.4);
         left: 50%;
         width: calc(var(--s) * 2.2);
         height: calc(var(--s) * 2.2);
@@ -246,15 +296,16 @@
       .chain .name {
         text-align: center;
         color: var(--accent);
+        font-weight: 600;
         font-size: calc(var(--s) * 2.4);
       }
 
       .chain .said {
-        margin-top: calc(var(--s) * 1.6);
+        margin-top: calc(var(--s) * 1.4);
         padding: 0 calc(var(--s) * 1.4);
-        color: var(--muted);
+        color: var(--sub);
         font-size: calc(var(--s) * 1.9);
-        line-height: 1.8;
+        line-height: 1.75;
       }
 
       /* ---- 図 ---- */
@@ -270,30 +321,32 @@
       }
 
       svg text {
-        fill: var(--muted);
+        fill: var(--sub);
         font-family: inherit;
       }
 
       svg .lbl-strong {
-        fill: var(--foreground);
+        fill: var(--ink);
+        font-weight: 600;
       }
 
       svg .lbl-accent {
         fill: var(--accent);
+        font-weight: 600;
       }
 
       svg .box {
-        fill: var(--surface);
+        fill: var(--tint);
         stroke: var(--line);
       }
 
       svg .box-accent {
-        fill: var(--surface);
+        fill: var(--accent-soft);
         stroke: var(--accent);
       }
 
       svg .edge {
-        stroke: var(--line);
+        stroke: #c9c5bd;
         fill: none;
       }
 
@@ -302,16 +355,105 @@
         fill: none;
       }
 
+      /* ---- 番号つきの項目 ---- */
+
+      ol.steps {
+        list-style: none;
+        counter-reset: n;
+      }
+
+      ol.steps li {
+        counter-increment: n;
+        position: relative;
+        padding-left: calc(var(--s) * 5.4);
+      }
+
+      ol.steps li + li {
+        margin-top: calc(var(--s) * 3.2);
+      }
+
+      ol.steps li::before {
+        content: counter(n);
+        position: absolute;
+        left: 0;
+        top: calc(var(--s) * 0.3);
+        width: calc(var(--s) * 3.2);
+        height: calc(var(--s) * 3.2);
+        border-radius: 50%;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: calc(var(--s) * 1.8);
+        font-weight: 600;
+        display: grid;
+        place-items: center;
+      }
+
+      /* 見出しの下に置く、読ませなくてもいい補足 */
+      .why {
+        margin-top: calc(var(--s) * 0.6);
+        color: var(--faint);
+        font-size: calc(var(--s) * 2);
+        line-height: 1.75;
+      }
+
+      ul.check {
+        list-style: none;
+      }
+
+      ul.check li {
+        position: relative;
+        padding-left: calc(var(--s) * 4);
+        font-size: calc(var(--s) * 2.5);
+        color: var(--sub);
+      }
+
+      ul.check li + li {
+        margin-top: calc(var(--s) * 1.8);
+      }
+
+      ul.check li::before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      .strike {
+        color: var(--faint);
+        text-decoration: line-through;
+        text-decoration-color: var(--faint);
+      }
+
+      .cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: calc(var(--s) * 6);
+        align-items: center;
+      }
+
+      code {
+        font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+        font-size: 0.9em;
+        color: var(--accent);
+        letter-spacing: 0;
+      }
+
+      .demo-shot {
+        height: calc(var(--s) * 58);
+        border: 1px solid var(--line);
+        border-radius: calc(var(--s) * 0.6);
+      }
+
       /* ---- 画面下の進捗(線の上の点) ---- */
 
       .rail {
         position: absolute;
-        left: calc(var(--s) * 11);
-        right: calc(var(--s) * 11);
+        left: calc(var(--s) * 10);
+        right: calc(var(--s) * 10);
         bottom: calc(var(--s) * 5);
         display: flex;
         align-items: center;
-        gap: calc(var(--s) * 1.2);
       }
 
       .rail .dots {
@@ -337,11 +479,11 @@
         transform: translate(-50%, -50%);
         border-radius: 50%;
         background: var(--line);
-        transition: background 0.35s ease;
+        transition: background 0.3s ease;
       }
 
       .rail .dot[data-done]::after {
-        background: var(--faint);
+        background: #cdc8bf;
       }
 
       .rail .dot[data-now]::after {
@@ -371,11 +513,11 @@
 
       .clock .now {
         font-size: calc(var(--s) * 3);
-        color: var(--muted);
+        color: var(--sub);
       }
 
       .clock[data-behind] .now {
-        color: var(--accent);
+        color: #c0392b;
       }
 
       .clock .plan::before {
@@ -383,7 +525,7 @@
         font-size: 0.8em;
       }
 
-      /* ---- 話す内容のメモ(nで開閉。既定は非表示) ---- */
+      /* ---- 話す内容のメモ(Nで開閉。既定は非表示) ---- */
 
       .notes {
         position: absolute;
@@ -391,12 +533,12 @@
         right: 0;
         bottom: 0;
         display: none;
-        padding: calc(var(--s) * 2) calc(var(--s) * 11);
-        background: var(--surface);
+        padding: calc(var(--s) * 2) calc(var(--s) * 10);
+        background: var(--tint);
         border-top: 1px solid var(--line);
-        color: var(--muted);
+        color: var(--sub);
         font-size: calc(var(--s) * 1.9);
-        line-height: 1.8;
+        line-height: 1.75;
       }
 
       .notes[data-on] {
@@ -411,7 +553,7 @@
         display: none;
         align-items: center;
         justify-content: center;
-        background: rgba(20, 18, 15, 0.96);
+        background: rgba(255, 255, 255, 0.97);
       }
 
       .help[data-on] {
@@ -429,67 +571,11 @@
         color: var(--accent);
         text-align: right;
         letter-spacing: 0.1em;
+        font-weight: 600;
       }
 
       .help dd {
-        color: var(--muted);
-      }
-
-      .demo-shot {
-        height: calc(var(--s) * 58);
-        border: 1px solid var(--line);
-        border-radius: calc(var(--s) * 0.6);
-      }
-
-      code {
-        font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
-        font-size: 0.88em;
-        color: var(--accent);
-        letter-spacing: 0;
-      }
-
-      .cols {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: calc(var(--s) * 6);
-        align-items: center;
-      }
-
-      ol.steps {
-        list-style: none;
-        counter-reset: n;
-      }
-
-      ol.steps li {
-        counter-increment: n;
-        position: relative;
-        padding-left: calc(var(--s) * 5);
-      }
-
-      ol.steps li + li {
-        margin-top: calc(var(--s) * 3.4);
-      }
-
-      /* 見出しの下に置く、読ませなくてもいい補足 */
-      .why {
-        margin-top: calc(var(--s) * 0.8);
-        color: var(--faint);
-        font-size: calc(var(--s) * 2);
-        line-height: 1.8;
-      }
-
-      ol.steps li::before {
-        content: counter(n);
-        position: absolute;
-        left: 0;
-        color: var(--accent);
-        font-size: calc(var(--s) * 2);
-      }
-
-      .strike {
-        color: var(--faint);
-        text-decoration: line-through;
-        text-decoration-color: var(--faint);
+        color: var(--sub);
       }
 
       #qr {
@@ -499,6 +585,7 @@
       #qr svg {
         width: calc(var(--s) * 32);
         height: auto;
+        border: 1px solid var(--line);
         border-radius: calc(var(--s) * 0.5);
       }
     </style>
@@ -521,81 +608,69 @@
             markerHeight="7"
             orient="auto-start-reverse"
           >
-            <path d="M0 0 L10 5 L0 10 z" fill="#c8a86a" />
+            <path d="M0 0 L10 5 L0 10 z" fill="#9a6b1f" />
           </marker>
         </defs>
       </svg>
 
-      <!-- 0:00 つかみ -->
-      <section class="slide" data-at="0:00" data-note="ゆっくり。名乗ってから3秒だけ黙る。">
+      <!-- ============ ① コンセプト(誰のため / 何の価値) ============ -->
+
+      <section class="slide" data-at="0:00" data-note="名乗ってから3秒だけ黙る。急がない。">
         <div class="stack">
           <h1>ことづて</h1>
           <p class="lead sub">ひとつの言葉が、別の誰かの言葉を生んでいく場所。</p>
+          <p class="faint">言伝(ことづて)= 人から人へ託されて運ばれる言葉</p>
         </div>
       </section>
 
       <section
         class="slide"
-        data-at="0:10"
+        data-at="0:15"
         data-note="実体験。作り話に聞こえないよう、声の温度を上げない。"
       >
         <div class="stack">
           <p class="eyebrow">はじまり</p>
-          <p class="big">「掃除しろ」<br />「普通はやるものでしょ」</p>
+          <p class="huge">「掃除しろ」<br />「普通はやるものでしょ」</p>
           <p class="lead sub">母と、何度も衝突しました。</p>
         </div>
       </section>
 
       <section
         class="slide"
-        data-at="0:25"
-        data-note="ここが企画の芯。「母を理解した」ではなく「自分の当たり前が見えた」が価値だと言い切る。"
+        data-at="0:35"
+        data-note="価値は「母を理解したこと」ではなく「自分の当たり前が見えたこと」。ここを言い切る。"
       >
         <div class="stack">
           <p class="eyebrow">整理してみると</p>
           <div class="cols">
             <div class="tight">
-              <p class="lead">家は<em>回復する場所</em></p>
+              <p class="big">家は<em>回復する場所</em></p>
               <p class="faint">— 私の前提</p>
             </div>
             <div class="tight">
-              <p class="lead">家は<em>共同生活の基盤</em></p>
+              <p class="big">家は<em>共同生活の基盤</em></p>
               <p class="faint">— 母の前提</p>
             </div>
           </div>
-          <p class="lead sub">掃除の問題ではなく、前提がズレていただけだった。</p>
-          <p class="big">価値があったのは、<br /><em>自分の当たり前が、初めて目に見えたこと</em>。</p>
-          <p class="lead faint">そしてそれは、一人で考えていても絶対に出てこなかった。</p>
-        </div>
-      </section>
-
-      <!-- 0:45 誰のため -->
-      <section
-        class="slide"
-        data-at="0:45"
-        data-note="評価軸『ユーザー価値25点』はここで取りに行く。誰のためかを一文で言い切る。"
-      >
-        <div class="stack">
-          <p class="eyebrow">誰のためのサービスか</p>
-          <p class="huge">
-            自分の中で考えすぎる人。<br />人に気を使いすぎて、<br />言いたいことを飲み込む人。
+          <p class="lead sub">掃除の問題ではなく、前提がズレていただけでした。</p>
+          <p class="big">
+            価値があったのは、<span class="mark">自分の当たり前が、初めて目に見えたこと</span>。
           </p>
         </div>
       </section>
 
       <section
         class="slide"
-        data-at="1:00"
-        data-note="「宛てられると防御が立つ」は覚えて帰ってもらう一言。"
+        data-at="0:55"
+        data-note="ここで個人の話から課題に一般化する。2文だけ。"
       >
         <div class="stack">
-          <p class="lead sub">その人に必要なのは、自分に宛てられた返信ではない。</p>
-          <div class="quote tight">
-            <p class="lead">宛てられた言葉には<em>防御が立つ</em>。</p>
-            <p class="lead">名前を出して表明した意見は、引っ込めにくい。</p>
-          </div>
-          <p class="big">
-            必要なのは、<em>自分と関係のないところで生きている、<br />他人の世界にふれること</em>。
+          <p class="eyebrow">課題</p>
+          <p class="huge">自分の「当たり前」は、<br />自分では見えない。</p>
+          <p class="lead sub">見えるのは、<em>違う考えに触れたとき</em>だけ。</p>
+          <p class="lead sub">
+            でも — 違う考えに触れる場所は、いま、いちばんそれを必要とする人にとって
+            <em>安全ではありません。</em>
           </p>
         </div>
       </section>
@@ -603,74 +678,121 @@
       <section
         class="slide"
         data-at="1:15"
-        data-note="「集めるのは名言ではない」。ここで既存サービスとの差を先に提示しておく。"
+        data-note="ユーザー価値25点はここから。具体例を1つ読み上げると刺さる。"
       >
         <div class="stack">
-          <p class="eyebrow">このサービスが集めるもの</p>
-          <h2>名言ではありません。<em>言葉と、それによって動いた自分</em>です。</h2>
-          <table>
-            <thead>
-              <tr>
-                <th></th>
-                <th>集めるもの</th>
-                <th>誰が読まれるか</th>
-                <th>言葉の行き先</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="who faint">名言アプリ</td>
-                <td class="faint">偉人の言葉</td>
-                <td class="faint">偉人のみ</td>
-                <td class="faint">お気に入り一覧</td>
-              </tr>
-              <tr>
-                <td class="who faint">SNS</td>
-                <td class="faint">投稿・反応</td>
-                <td class="faint">目立つ人</td>
-                <td class="faint">流れて消える</td>
-              </tr>
-              <tr>
-                <td class="who faint">日記アプリ</td>
-                <td class="faint">出来事・感情</td>
-                <td class="faint">本人のみ</td>
-                <td class="faint">非公開の記録</td>
-              </tr>
-              <tr class="mine">
-                <td class="who">ことづて</td>
-                <td>言葉 + それで自分がどう動いたか</td>
-                <td>誰でも</td>
-                <td>次の誰かに届く</td>
-              </tr>
-            </tbody>
-          </table>
+          <p class="eyebrow">誰のためのサービスか</p>
+          <p class="huge">
+            自分の中で考えすぎる人。<br />人に気を使いすぎて、<br />言いたいことを飲み込む人。
+          </p>
+          <div class="quote tight">
+            <p class="lead">会議で違和感を持っても「まあいいか」で終わらせてしまう</p>
+            <p class="lead">友達が誰かの悪口を言っているとき、否定も肯定もできず黙る</p>
+            <p class="lead">SNSに書こうとして、投稿する直前に全部消す</p>
+          </div>
         </div>
       </section>
 
-      <!-- 1:30 循環 -->
       <section
         class="slide"
-        data-at="1:30"
-        data-note="「この輪だけでできています」。コメントもいいねもフォローもない、と続ける。"
+        data-at="1:35"
+        data-note="既存手段がなぜ効かないか。「そもそもそれができない人の話をしている」が効く。"
       >
         <div class="stack">
-          <p class="eyebrow">中核 — 影響の循環</p>
+          <p class="eyebrow">その人にとって、いまある場所は効かない</p>
+          <table>
+            <tbody>
+              <tr>
+                <td class="who">SNS・掲示板</td>
+                <td>
+                  自分に宛てて返信が来る。<em>宛てられると防御が立つ</em>し、
+                  名前を出して表明した意見は引っ込めにくい
+                </td>
+              </tr>
+              <tr>
+                <td class="who">名言アプリ</td>
+                <td>受け取って終わり。自分の側は何も動かない</td>
+              </tr>
+              <tr>
+                <td class="who">日記アプリ</td>
+                <td>自分の中だけで完結する。自分の前提は、自分では見えない</td>
+              </tr>
+              <tr>
+                <td class="who">人に相談する</td>
+                <td>相手にも気を使う。<em>そもそもそれができない人</em>の話をしています</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="lead sub">
+            必要なのは、<span class="mark"
+              >自分と関係のないところで生きている、他人の世界にふれること</span
+            >。
+          </p>
+        </div>
+      </section>
+
+      <section
+        class="slide"
+        data-at="2:00"
+        data-note="評価基準そのものに答える一枚。4つを順に指しながら読む。ここは飛ばさない。"
+      >
+        <div class="stack">
+          <p class="eyebrow">このサービスの価値</p>
+          <div class="grid4">
+            <div class="cell">
+              <h3>誰の</h3>
+              <p>自分の中で考えすぎる人。<br />気を使って言葉を飲み込む人。</p>
+            </div>
+            <div class="cell">
+              <h3>どんな課題を</h3>
+              <p>自分の前提が見えない。<br />それに気づける安全な場所がない。</p>
+            </div>
+            <div class="cell">
+              <h3>どう解決し</h3>
+              <p>
+                <em>誰にも宛てられていない</em>他人の言葉が、1日1回だけ届く。<br />
+                心が動いたら書く。返信も評価も来ない。
+              </p>
+            </div>
+            <div class="cell">
+              <h3>どんな効果があるか</h3>
+              <p>
+                自分の前提が見える。さらに、<em>自分の言葉が誰かの前提を動かした</em>ことが返ってくる。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="slide"
+        data-at="2:20"
+        data-note="「この輪だけでできています」。機能一覧ではなく循環として説明する。"
+      >
+        <div class="stack">
+          <p class="eyebrow">解決策 — ひとつの循環</p>
           <figure>
-            <svg viewBox="0 0 860 205" role="img" aria-label="言葉が届き、書き、誰かに届き、その人の心が動いて、また届く循環">
+            <svg
+              viewBox="0 0 860 205"
+              role="img"
+              aria-label="言葉が届き、書き、誰かに届き、その人の心が動いて、また届く循環"
+            >
               <g font-size="19">
-                <circle cx="90" cy="110" r="7" fill="#c8a86a" />
+                <circle cx="90" cy="110" r="7" fill="#9a6b1f" />
                 <text class="lbl-strong" x="90" y="160" text-anchor="middle">① 言葉が届く</text>
                 <text x="90" y="188" text-anchor="middle" font-size="16">1日1回</text>
 
-                <circle cx="340" cy="110" r="7" fill="#c8a86a" />
-                <text class="lbl-strong" x="340" y="160" text-anchor="middle">② 自分の言葉を書く</text>
+                <circle cx="340" cy="110" r="7" fill="#9a6b1f" />
+                <text class="lbl-strong" x="340" y="160" text-anchor="middle">
+                  ② 自分の言葉を書く
+                </text>
                 <text x="340" y="188" text-anchor="middle" font-size="16">心が動いたら</text>
 
-                <circle cx="590" cy="110" r="7" fill="#c8a86a" />
+                <circle cx="590" cy="110" r="7" fill="#9a6b1f" />
                 <text class="lbl-strong" x="590" y="160" text-anchor="middle">③ 誰かに届く</text>
                 <text x="590" y="188" text-anchor="middle" font-size="16">明日</text>
 
-                <circle cx="790" cy="110" r="7" fill="#c8a86a" />
+                <circle cx="790" cy="110" r="7" fill="#9a6b1f" />
                 <text class="lbl-strong" x="790" y="160" text-anchor="middle">④ 心が動く</text>
               </g>
 
@@ -687,19 +809,20 @@
             </svg>
           </figure>
           <p class="lead sub">
-            コメントも、いいねも、フォローもありません。<em>この輪だけ</em>でできています。
+            コメントも、いいねも、フォローも、通知もありません。<em>この輪だけ</em>でできています。
           </p>
         </div>
       </section>
 
-      <!-- 2:00 デモ -->
+      <!-- ============ ② デモ ============ -->
+
       <section
         class="slide"
-        data-at="2:00"
-        data-note="ここで画面を本番URLに切り替える。4分。落ちたらこのスライドのGIFで代替できる。"
+        data-at="2:40"
+        data-note="ここで画面を本番URLに切り替える。3分20秒。落ちたらこの録画で代替する。"
       >
         <div class="stack" style="align-items: center; text-align: center">
-          <p class="eyebrow">デモ</p>
+          <p class="eyebrow" style="align-self: stretch">デモ</p>
           <img
             class="demo-shot"
             src="media/demo.gif"
@@ -709,14 +832,44 @@
         </div>
       </section>
 
-      <!-- 6:00 デモの意味 -->
       <section
         class="slide"
-        data-at="5:30"
+        data-at="6:00"
+        data-note="デモで見せたものを、効果の言葉に翻訳する。ここがユーザー価値の締め。"
+      >
+        <div class="stack">
+          <p class="eyebrow">使うと、何が変わるか</p>
+          <div class="cols">
+            <div class="tight">
+              <h3 class="faint" style="letter-spacing: 0.3em; font-size: 0.75em">これまで</h3>
+              <p class="lead sub">
+                会議で違和感を持っても、<br />「まあいいか」で終わらせる。<br />
+                モヤモヤは言葉にならないまま消える。
+              </p>
+            </div>
+            <div class="tight">
+              <h3 class="faint" style="letter-spacing: 0.3em; font-size: 0.75em">ことづて</h3>
+              <p class="lead">
+                「黙るのは中立じゃない」という<br />他人の一文が届く。<br />
+                <em>先月の自分が、見える。</em>
+              </p>
+            </div>
+          </div>
+          <p class="big">
+            そして書いた言葉が、明日、<span class="mark">別の誰かの前提を動かします。</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ 独自性 ============ -->
+
+      <section
+        class="slide"
+        data-at="6:20"
         data-note="第一の山場。4人の内容が全部違うことを、指しながら読み上げる。"
       >
         <div class="stack">
-          <p class="eyebrow">いま見た4世代</p>
+          <p class="eyebrow">デモで見た4世代</p>
           <div class="chain">
             <div class="node">
               <p class="name">芥川龍之介</p>
@@ -737,28 +890,65 @@
           </div>
           <p class="big">内容は、<em>全部違います。</em></p>
           <p class="lead sub">
-            残っているのは<em>「この言葉がなければ、この言葉は生まれなかった」という関係だけ</em>。
+            残っているのは<span class="mark"
+              >「この言葉がなければ、この言葉は生まれなかった」という関係だけ</span
+            >。
           </p>
         </div>
       </section>
 
-      <section
-        class="slide"
-        data-at="5:45"
-        data-note="覚えて帰ってもらう一言。ここは強く。"
-      >
+      <section class="slide" data-at="6:45" data-note="覚えて帰ってもらう一言。ここは強く。">
         <div class="stack">
           <p class="lead sub">リツイートは、内容が変わらずに広がる。</p>
           <p class="lead sub">ここでは、<em>内容が変わらないと成立しない。</em></p>
-          <p class="huge">転送ボタンを置いていないのではなく、<br /><em>転送が原理的に不可能</em>な構造です。</p>
+          <p class="huge">
+            転送ボタンを置いていないのではなく、<br /><span class="mark"
+              >転送が原理的に不可能</span
+            >な構造です。
+          </p>
         </div>
       </section>
 
-      <!-- 6:00 コード -->
+      <!-- ============ ③ コード説明 ============ -->
+
       <section
         class="slide"
-        data-at="6:00"
-        data-note="ここからGitHubを投影。まずアーキ図。「APIサーバーを別に立てていない」。"
+        data-at="7:00"
+        data-note="ここからGitHubを投影。独自性25点の主張はこの1カラムに集約する。"
+      >
+        <div class="stack">
+          <p class="eyebrow">独自性は、1カラムに集約されている</p>
+          <p class="huge"><code>parent_word_id</code></p>
+          <p class="lead sub">
+            血統でも継承でもなく、<em>「この言葉がなければ、この言葉は生まれなかった」</em>を記録する。
+          </p>
+          <table>
+            <tbody>
+              <tr>
+                <td class="who">名言アプリ</td>
+                <td>持っていない</td>
+              </tr>
+              <tr>
+                <td class="who">日記アプリ</td>
+                <td>持っていない</td>
+              </tr>
+              <tr>
+                <td class="who">匿名SNS</td>
+                <td>持っていない</td>
+              </tr>
+              <tr class="mine">
+                <td class="who">ことづて</td>
+                <td>4世代の系譜が、再帰クエリ1回で取れる</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section
+        class="slide"
+        data-at="7:25"
+        data-note="「APIサーバーを別に立てていない」。技術・工夫30点のパート。"
       >
         <div class="stack">
           <p class="eyebrow">アーキテクチャ</p>
@@ -775,7 +965,7 @@
                   height="88"
                   rx="4"
                   fill="none"
-                  stroke="#2e2822"
+                  stroke="#d8d4cc"
                   stroke-dasharray="3 4"
                 />
                 <text x="130" y="94" font-size="14" text-anchor="start">
@@ -807,7 +997,7 @@
             </svg>
           </figure>
           <p class="lead sub">
-            Next.js の Server Components と Server Actions で、<em>APIサーバーなしの1プロジェクト構成</em>。<br />
+            Server Components と Server Actions で、<em>APIサーバーなしの1プロジェクト構成</em>。<br />
             ブラウザからDBへの直接アクセスはなく、SQLは全部サーバー側に閉じています。
           </p>
         </div>
@@ -815,13 +1005,17 @@
 
       <section
         class="slide"
-        data-at="6:45"
-        data-note="テーブルは3つだけ。偉人もユーザーも同じ words に同じ形式で並ぶ、が思想の核。"
+        data-at="7:50"
+        data-note="テーブルは3つだけ。偉人もユーザーも同じ words に並ぶ、が思想の核。"
       >
         <div class="stack">
           <p class="eyebrow">データ構造 — テーブルは3つだけ</p>
           <figure>
-            <svg viewBox="0 0 860 330" role="img" aria-label="words テーブルに偉人とユーザーが同じ形式で並び、parent_word_id が自己参照する">
+            <svg
+              viewBox="0 0 860 330"
+              role="img"
+              aria-label="words テーブルに偉人とユーザーが同じ形式で並び、parent_word_id が自己参照する"
+            >
               <g font-size="17">
                 <rect class="box" x="20" y="55" width="170" height="66" rx="4" />
                 <text class="lbl-strong" x="105" y="86" text-anchor="middle">users</text>
@@ -833,7 +1027,7 @@
 
                 <rect class="box-accent" x="320" y="30" width="370" height="260" rx="4" />
                 <text class="lbl-accent" x="505" y="65" text-anchor="middle">words</text>
-                <line x1="340" y1="82" x2="670" y2="82" stroke="#2e2822" />
+                <line x1="340" y1="82" x2="670" y2="82" stroke="#ddd2ba" />
 
                 <text class="lbl-strong" x="344" y="115">text</text>
                 <text x="666" y="115" text-anchor="end" font-size="15">言葉そのもの</text>
@@ -871,42 +1065,8 @@
 
       <section
         class="slide"
-        data-at="7:20"
-        data-note="独自性25点はここ。「調べた範囲でこのカラムを持っている競合はなかった」と言い切る。"
-      >
-        <div class="stack">
-          <p class="eyebrow">独自性は、1カラムに集約されている</p>
-          <p class="huge"><code>parent_word_id</code></p>
-          <p class="lead sub">
-            血統でも継承でもなく、<em>「この言葉がなければ、この言葉は生まれなかった」</em>を記録する。
-          </p>
-          <table>
-            <tbody>
-              <tr>
-                <td class="who faint">名言アプリ</td>
-                <td class="faint">持っていない</td>
-              </tr>
-              <tr>
-                <td class="who faint">日記アプリ</td>
-                <td class="faint">持っていない</td>
-              </tr>
-              <tr>
-                <td class="who faint">匿名SNS</td>
-                <td class="faint">持っていない</td>
-              </tr>
-              <tr class="mine">
-                <td class="who">ことづて</td>
-                <td>4世代の系譜が、<em>再帰クエリ1回</em>で取れる</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section
-        class="slide"
-        data-at="7:45"
-        data-note="技術・工夫30点。3つとも『やらなかったこと』が理由になっている点を強調する。"
+        data-at="8:15"
+        data-note="3つとも「やらなかったこと」が理由になっている点を強調する。"
       >
         <div class="stack">
           <p class="eyebrow">工夫・苦労した点</p>
@@ -915,7 +1075,7 @@
               <p class="lead">引用の正しさを、<em>データ構造で担保した</em></p>
               <p class="why">
                 48件すべて原典から手作業で採取。全件に出典URL、訳出27件に原文を併記。
-                <span class="accent">実行時にAIは1回も呼んでいない。</span>
+                <span style="color: var(--accent)">実行時にAIは1回も呼んでいない。</span>
               </p>
             </li>
             <li>
@@ -936,10 +1096,27 @@
         </div>
       </section>
 
-      <!-- 8:30 やらないこと -->
       <section
         class="slide"
-        data-at="8:30"
+        data-at="8:40"
+        data-note="完成度20点。ここは事実を淡々と読み上げるだけでよい。"
+      >
+        <div class="stack">
+          <p class="eyebrow">できていること</p>
+          <ul class="check">
+            <li>3画面 + デモ用画面すべて実装済み、<em>本番にデプロイ済み</em>(Vercel + Supabase)</li>
+            <li>偉人の言葉48件、<em>全件に出典URL</em>、訳出27件に原文を併記</li>
+            <li>4世代の系譜が、モックではなく<em>実データ</em>で動いている</li>
+            <li>実行時にAIを呼ぶ処理は<em>ゼロ</em>。配信も抽選も来歴もSQLだけ</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ============ 締め ============ -->
+
+      <section
+        class="slide"
+        data-at="9:00"
         data-note="「全部、意図して作らなかった」。機能不足ではないと明言する。"
       >
         <div class="stack">
@@ -953,11 +1130,7 @@
         </div>
       </section>
 
-      <section
-        class="slide"
-        data-at="9:00"
-        data-note="これから。実装は既存データを引くだけ、と現実味を添える。"
-      >
+      <section class="slide" data-at="9:20" data-note="実装は既存データを引くだけ、と現実味を添える。">
         <div class="stack">
           <p class="eyebrow">これから作りたいもの</p>
           <h2 class="huge">再会</h2>
@@ -969,31 +1142,24 @@
         </div>
       </section>
 
-      <!-- 9:30 締め -->
       <section
         class="slide"
-        data-at="9:30"
-        data-note="最後の一文を言い切ってから、2秒黙って終わる。"
+        data-at="9:40"
+        data-note="最後の一文を言い切ってから、2秒黙る。そのままQRを出して質疑へ。"
       >
         <div class="stack">
-          <p class="big">いま、この場で私が書いた言葉は、<br /><em>明日、誰かのもとに届きます。</em></p>
-          <p class="lead sub">
-            このサービスは、対立を解決する道具ではありません。<br />
-            できるのは、衝突が起きる前に、<em>自分の前提が見える機会を1日1回つくること</em>だけです。
-          </p>
-          <p class="lead">それで十分価値があると、私は思っています。</p>
-        </div>
-      </section>
-
-      <section class="slide" data-at="9:55" data-note="質疑へ。URLを出したまま質問を受ける。">
-        <div class="stack">
-          <div class="cols">
+          <div class="cols" style="grid-template-columns: 1.85fr 1fr">
             <div class="stack">
               <h1>ことづて</h1>
-              <p class="lead sub">
-                触ってみてください。<br />いま書いた言葉は、明日、誰かに届きます。
+              <p class="big">
+                いま、この場で私が書いた言葉は、<br /><span class="mark">明日、誰かに届きます。</span>
               </p>
-              <p class="lead accent" id="qr-url"></p>
+              <p class="lead sub">
+                できるのは、衝突が起きる前に、<br />
+                自分の前提が見える機会を1日1回つくることだけ。<br />
+                それで十分価値があると、私は思っています。
+              </p>
+              <p class="lead" style="color: var(--accent)" id="qr-url"></p>
             </div>
             <figure id="qr"></figure>
           </div>
@@ -1312,8 +1478,8 @@
         }
         el.innerHTML =
           `<svg viewBox="0 0 ${box} ${box}" shape-rendering="crispEdges" role="img" aria-label="${text}">` +
-          `<rect width="${box}" height="${box}" fill="#ece5da"/>` +
-          `<path d="${path}" fill="#14120f"/></svg>`;
+          `<rect width="${box}" height="${box}" fill="#ffffff"/>` +
+          `<path d="${path}" fill="#17150f"/></svg>`;
       }
 
       const deck = document.getElementById("deck");
