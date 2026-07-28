@@ -313,6 +313,12 @@ npm run db:demo   # デモ用データ(4世代の系譜 + 配信履歴)
 `data/words.seed.json` と `scripts/demo-data.ts` から `npm run db:export` で生成しているため、
 元データを変えたら再生成すること。
 
+> **収録テキストを入れ替えたときは、作り直しが必要。**
+> `db/seed.sql` は「同じ本文がなければ入れる」方式なので、**本文を書き換えた言葉は別の行として追加され、
+> 古い版が残ってしまう**。削除した言葉も消えない。
+> その場合は [`db/reset.sql`](db/reset.sql) を先に実行してから、schema → seed → demo をやり直す。
+> テーブルを作り直すと RLS の設定も消えるので、有効にし直すこと(`db/reset.sql` の冒頭に手順がある)。
+
 ### 5. 起動する
 
 ```bash
@@ -330,7 +336,7 @@ http://localhost:3000
 | `npm run db:seed` | スキーマ適用 + 偉人の言葉を投入 |
 | `npm run db:demo` | デモ用データを投入(毎回作り直す) |
 | `npm run db:export` | `db/seed.sql` と `db/demo.sql` を生成し直す |
-| `npm run db:reset` | 全テーブルを削除 |
+| `npm run db:reset` | 全テーブルを削除(SQLだけで行う場合は `db/reset.sql`) |
 
 ---
 
