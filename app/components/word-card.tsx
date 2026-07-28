@@ -84,12 +84,13 @@ function Provenance({
         の言葉に触れて書いたものです
       </p>
 
-      <blockquote className="mt-3 border-l border-line pl-4 text-xs leading-relaxed text-faint">
+      {/* 来歴は循環を見せる中核の情報なので、補助テキストより読める濃さにする */}
+      <blockquote className="mt-3 border-l border-line pl-4 text-xs leading-relaxed text-muted">
         {parent.text}
       </blockquote>
 
       {lineage.length > 2 && (
-        <p className="mt-4 text-[0.7rem] tracking-wider text-faint">
+        <p className="mt-4 text-[0.7rem] tracking-wider text-muted">
           {lineage.map((link) => link.author).join(" → ")}
         </p>
       )}

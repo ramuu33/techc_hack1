@@ -2,6 +2,7 @@
 
 import { useActionState, useState, useTransition } from "react";
 
+import { MAX_WORD_LENGTH, MIN_WORD_LENGTH } from "@/lib/constants";
 import type { WordWithLineage } from "@/lib/queries";
 
 import {
@@ -147,7 +148,8 @@ function WriteForm({
         id="text"
         name="text"
         rows={4}
-        maxLength={500}
+        minLength={MIN_WORD_LENGTH}
+        maxLength={MAX_WORD_LENGTH}
         required
         placeholder="この言葉を読んで、自分が何に気づいたか"
         className="mt-3 w-full resize-none border-b border-line bg-transparent py-3 leading-loose outline-none placeholder:text-faint focus:border-accent"

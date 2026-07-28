@@ -2,6 +2,8 @@
 
 import { useActionState } from "react";
 
+import { MAX_NICKNAME_LENGTH } from "@/lib/constants";
+
 import { startSession, type ActionState } from "../actions";
 
 export function Onboarding() {
@@ -31,7 +33,7 @@ export function Onboarding() {
         <input
           id="nickname"
           name="nickname"
-          maxLength={20}
+          maxLength={MAX_NICKNAME_LENGTH}
           required
           autoComplete="off"
           placeholder="たろう"

@@ -5,6 +5,11 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { ALLOW_REROLL, SESSION_COOKIE } from "@/lib/config";
+import {
+  MAX_NICKNAME_LENGTH,
+  MAX_WORD_LENGTH,
+  MIN_WORD_LENGTH,
+} from "@/lib/constants";
 import { sql } from "@/lib/db";
 import {
   drawWord,
@@ -25,8 +30,10 @@ export async function startSession(
   formData: FormData,
 ): Promise<ActionState> {
   const nickname = String(formData.get("nickname") ?? "").trim();
-  if (!nickname || nickname.length > 20) {
-    return { error: "ニックネームは1〜20文字で入力してください。" };
+  if (!nickname || nickname.length > MAX_NICKNAME_LENGTH) {
+    return {
+      error: `ニックネームは1〜${MAX_NICKNAME_LENGTH}文字で入力してください。`,
+    };
   }
 
   const [user] = await sql<{ id: string }[]>`
@@ -61,7 +68,11 @@ export async function receiveTodaysWord(): Promise<ReceiveState> {
 
   const drawn = await drawWord(user.id);
   if (!drawn) {
-    return { error: "あなたにまだ届いていない言葉が尽きました。" };
+    // プールは在庫ではないので、これは「この人がまだ見ていない言葉が尽きた」という意味。
+    // 誰かが書けばまた増える。
+    return {
+      error: "あなたに届いていない言葉が、いまはありません。誰かが新しい言葉を書くと、また届きます。",
+    };
   }
 
   const word = await getWordWithLineage(drawn.id);
@@ -82,8 +93,16 @@ export async function writeWord(
   const text = String(formData.get("text") ?? "").trim();
   const parentWordId = String(formData.get("parentWordId") ?? "");
 
-  if (!text) return { error: "言葉を入力してください。" };
-  if (text.length > 500) return { error: "500文字以内で入力してください。" };
+  // 書かれた言葉はそのまま抽選プールに入り、他の人に届く。
+  // 一文字だけの投稿が誰かの「今日の一言」になってしまわないよう下限を設ける。
+  if (text.length < MIN_WORD_LENGTH) {
+    return {
+      error: `もう少しだけ書いてみてください(${MIN_WORD_LENGTH}文字以上)。`,
+    };
+  }
+  if (text.length > MAX_WORD_LENGTH) {
+    return { error: `${MAX_WORD_LENGTH}文字以内で入力してください。` };
+  }
 
   // 実際に自分に届いた言葉に対してしか書けない。
   // Server Action は UI を経由せず直接呼べるため、ここで必ず検証する。
