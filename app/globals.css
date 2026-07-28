@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f7f4ee;
+  --surface: #fffdf9;
+  --foreground: #1f1b16;
+  --muted: #6f6455;
+  /* 小さな補助テキストに使うため、本文と同じ 4.5:1 を満たす濃さにしている */
+  --faint: #736957;
+  --line: #e2dace;
+  --accent: #8a6f3f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #14120f;
+    --surface: #1c1916;
+    --foreground: #ece5da;
+    --muted: #a2988a;
+    --faint: #8f8574;
+    --line: #2e2822;
+    --accent: #c8a86a;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family:
+    "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP",
+    "Source Han Serif JP", serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 受け取りの演出:言葉がゆっくり浮かび上がる。企画上いちばん演出を厚くする箇所。 */
+@keyframes arrive {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-arrive {
+  animation: arrive 1.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-up {
+  animation: fade-up 0.7s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-arrive,
+  .animate-fade-up {
+    animation-duration: 0.01ms;
+  }
+}
