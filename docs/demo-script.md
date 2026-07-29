@@ -2,7 +2,7 @@
 
 > 当日の作業手順は [checklist.md](checklist.md) にまとめてある。朝はそちらから。
 
-スライドは [`docs/slides.html`](slides.html)。ブラウザで開くだけで、この台本と同じ順に並んでいる。
+スライドは <https://techc-hack1.vercel.app/slides.html>。ファイルは [`public/slides.html`](../public/slides.html)。
 **当日そのまま読むなら [`talk.md`](talk.md)** — 実際に口に出す文だけを抜き出したもの。
 
 発表要件(必須3構成)と評価基準(100点満点)に台本を対応させている。
@@ -81,12 +81,13 @@ delete from users where nickname = 'ここに名前';
 | 4 | バックアップ動画を別タブで開いておく | ネットワーク不調のときに切り替えられない |
 | 5 | GitHub の README をタブで開いておく | コード説明パートで投影するため |
 | 6 | ブラウザの通知をオフ・不要なタブを閉じる | 画面共有に私物が映る |
-| 7 | `docs/slides.html` の `QR_URL` を本番URLにする | 最後のスライドのQRが別の場所を指す |
+| 7 | `public/slides.html` の `QR_URL` が本番URLになっている | 最後のスライドのQRが別の場所を指す |
 | 8 | そのQRを自分のスマホで一度読む | 当日その場で読めないと気まずい |
 
 ### スライドの操作
 
-`docs/slides.html` をブラウザで開く(ネットワーク不要、1ファイルで完結)。
+<https://techc-hack1.vercel.app/slides.html> を開く。ダウンロードした [`public/slides.html`](../public/slides.html) をブラウザで開いてもよい
+(その場合はネットワークが要らない)。
 
 | キー | 動作 |
 |---|---|

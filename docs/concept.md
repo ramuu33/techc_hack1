@@ -371,7 +371,7 @@ AIを使わないのか?
 
 - 読み上げ用の台本 … [talk.md](talk.md)
 - 準備・進行・事故対策・想定質問 … [demo-script.md](demo-script.md)
-- スライド20枚 … [slides.html](slides.html)
+- スライド20枚 … <https://techc-hack1.vercel.app/slides.html>
 
 このドキュメントは企画時点の考えを残す場所なので、当日の運用はそちらを見る。
 
@@ -421,7 +421,9 @@ repo/
 │   ├── sources.md         ← 出典と著作権の確認
 │   ├── landscape.md       ← 近接サービスの調査
 │   ├── demo-script.md     ← 発表台本(10分)
-│   ├── slides.html        ← 発表スライド(1ファイル完結)
+│   └── landscape.md       ← 近接サービスの調査
+├── public/
+│   ├── slides.html        ← 発表スライド(本番から配信)
 │   └── media/demo.gif     ← READMEに埋め込むデモ録画
 ├── .env.example
 ├── .gitignore
