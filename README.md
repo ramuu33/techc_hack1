@@ -13,7 +13,7 @@
 最初は偉人の言葉しかない。使われるほど、ユーザー自身が書いた言葉が
 プールに増えていく。
 
-<img src="docs/media/demo.gif" width="300" alt="ことづてのデモ:言葉が届き、来歴をたどり、自分の言葉を託し、それが誰かの言葉を生むまで" />
+<img src="public/media/demo.gif" width="300" alt="ことづてのデモ:言葉が届き、来歴をたどり、自分の言葉を託し、それが誰かの言葉を生むまで" />
 
 上の30秒で起きていること。言葉がひとつ届き、芥川龍之介 → のらねこ → 三日坊主 → こもれび と
 4世代の来歴をたどる。自分の言葉を書いて託し、誰かが受け取る。
@@ -431,7 +431,8 @@ Transaction pooler(6543番)の接続文字列を使う。6543番のときは pre
 9. `/others` で他の人の軌跡を開く
 
 話す内容・時間配分・事故対策は [docs/demo-script.md](docs/demo-script.md) に10分の台本としてまとめてある。
-スライドは [docs/slides.html](docs/slides.html) — ブラウザで開くだけで動く1ファイルで、台本と同じ順に並んでいる。
+スライドは <https://techc-hack1.vercel.app/slides.html>(本番から配信している)。
+ファイルは [public/slides.html](public/slides.html) の1枚で、ブラウザで開くだけでも動く。
 
 ---
 
@@ -443,7 +444,8 @@ Transaction pooler(6543番)の接続文字列を使う。6543番のときは pre
 - [docs/checklist.md](docs/checklist.md) — 当日やること(順番どおりに上から)
 - [docs/demo-script.md](docs/demo-script.md) — 10分の発表台本(事前準備・話す内容・事故対策・想定質問)
 - [docs/talk.md](docs/talk.md) — 読み上げ用の台本(口に出す文だけ・分量と話速を実測済み)
-- [docs/slides.html](docs/slides.html) — 発表スライド(1ファイル完結・タイマー内蔵・QRはその場で生成)
+- [public/slides.html](public/slides.html) — 発表スライド(1ファイル完結・タイマー内蔵・QRはその場で生成)
+  - 公開URL: <https://techc-hack1.vercel.app/slides.html>
 
 ---
 

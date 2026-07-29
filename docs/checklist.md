@@ -77,7 +77,7 @@ delete from users where nickname = 'ここに名前';
 
 ## 5. QRコードを本番URLにする
 
-`docs/slides.html` の上のほうにある1行を書き換える。
+`public/slides.html` の上のほうにある1行を書き換える。
 
 ```js
 const QR_URL = "https://techc-hack1.vercel.app";
